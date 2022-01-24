@@ -112,3 +112,24 @@ class AAViewSet(viewsets.ModelViewSet):
 
 
 
+
+def bb(request):
+    return render(request, 'login.html')
+
+
+def list(request):
+
+    cursor = MySqlConn.makeCursor()
+    query = str.format("select distinct(m_lcn) from aa;")
+    cursor.execute(query)
+    a = cursor.fetchall()
+
+
+    return render(request, 'aa.html', {'list':a})
+
+def list1(request):
+
+    ls = ['a']
+
+    return render(request, 'aa.html',{'ls':ls})
+
