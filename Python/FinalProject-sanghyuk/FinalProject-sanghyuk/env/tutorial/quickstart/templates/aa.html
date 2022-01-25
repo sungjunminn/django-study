@@ -31,12 +31,19 @@
 
         <h4 class="text-center mt-4">차렷</h4>
         <h6 class="text-center mb-4"></h6>
+
         <section class="search-sec">
             <div class="container">
 
+
+            <form action='./post/' method="POST"> {% csrf_token %}
+                <select name="m_lcc" id="addressRegion1" class="form-control search-slt"></select>
+                <select name="m_mcc" id="addressDo1" class="form-control search-slt"></select>
+                <select name="m_scc" id="addressSiGunGu1" class="form-control search-slt"></select>
+
                 <script language='javascript'>
                      $(function(){
-                        areaSelectMaker("select[name=addressRegion]");
+                        areaSelectMaker("select[name=m_lcc]");
                     });
 
                     var areaSelectMaker = function(target){
@@ -160,9 +167,8 @@
                         }
                     }
                 </script>
-                <select name="addressRegion" id="addressRegion1" class="form-control search-slt"></select>
-                <select name="addressDo" id="addressDo1" class="form-control search-slt"></select>
-                <select name="addressSiGunGu" id="addressSiGunGu1" class="form-control search-slt"></select>
+
+
 
 <!--                                    <br/>-->
 <!--                                    <br/>-->
@@ -171,13 +177,11 @@
 <!--                                    <select name="addressRegion" id="addressRegion2"></select>-->
 <!--                                    <select name="addressDo" id="addressDo2"></select>-->
 <!--                                    <select name="addressSiGunGu" id="addressSiGunGu2"></select>-->
-                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-                <form method="post">
-                    {% csrf_token %}
-                    <button type="button" class="btn btn-primary wrn-btn">Search</button>
-                </form>
-                <h2>{{post}}</h2>
-                                </div>
+
+<!--            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
+            <input type="submit" value="전송"/>
+            </form>
+                    </div>
         </section>
 
         <h4 class="text-center mt-5"></h4>

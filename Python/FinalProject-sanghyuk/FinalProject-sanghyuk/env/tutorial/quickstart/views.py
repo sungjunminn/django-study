@@ -135,27 +135,27 @@ class map2:
     def MapMarker(a):
 
         cursor = MySqlConn.makeCursor()
-        query = str.format("select m_name,m_lcn,m_lcc,lat,lng,m_mcn,m_mcc,m_scc from aa;")
+        query = str.format("select m_name,m_lcn,m_lcc,lat,lng,m_mcn,m_mcc,m_scc,m_scn from aa;")
         conn = MySqlConn.conn()
         df = pd.read_sql(query, conn)  # pandas로 읽기
-        df_lcc = df[df['m_lcc'] == a]
-        map2.df_select = df_lcc
-        return df_lcc['m_mcc']
+        df_lcn = df[df['m_lcn'] == a]
+        map2.df_select = df_lcn
+        return df_lcn['m_mcn']
 
     @staticmethod
     def MapMarker2(b):
 
-        df_lcc = map2.df_select
-        df_mcc = df_lcc[df_lcc['m_mcc'] == b]
-        map2.df_select = df_mcc
-        return df_mcc['m_scc']
+        df_lcn = map2.df_select
+        df_mcn = df_lcn[df_lcn['m_mcn'] == b]
+        map2.df_select = df_mcn
+        return df_mcn['m_scn']
 
     @staticmethod
     def MapMarker3(c):  # 소분류 선택
 
-        df_mcc = map2.df_select
-        df_scc = df_mcc[df_mcc['m_scc'] == c]
-        map2.df_select = df_scc
+        df_mcn = map2.df_select
+        df_scn = df_mcn[df_mcn['m_scn'] == c]
+        map2.df_select = df_scn
         map2.MapExe()
 
     @staticmethod
@@ -193,6 +193,9 @@ class PostAPIView(APIView):
         a = request.data.get("m_lcc")
         b = request.data.get("m_mcc")
         c = request.data.get("m_scc")
+        print(request.data.get("m_lcc"))
+        print(request.data.get("m_mcc"))
+        print(request.data.get("m_scc"))
         map2.MapMarker(a)
         map2.MapMarker2(b)
         map2.MapMarker3(c)
@@ -224,3 +227,6 @@ from django.shortcuts import get_object_or_404
 #         post = self.get_object(pk)
 #         post.delete()
 #         return Response(status=status.HTTP_204_NO_CONTENT)
+
+def asdf(request):
+    return render(request, 'aa.html')
