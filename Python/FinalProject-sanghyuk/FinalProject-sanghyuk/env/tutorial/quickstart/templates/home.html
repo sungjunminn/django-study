@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>home</title>
+</head>
+    <body> <!-- 전체 지도 -->
+        <fieldset>
+
+            <legend>
+
+                POST
+
+            </legend>
+
+            <form action="post/" method="POST"> {% csrf_token %}//'./':URL 전체 주소의 현재 폴더까지(상대경로)/example2.php
+
+
+                <p>
+                    m_lcc :
+
+                    <select name="m_lcc">
+                        <option value="Q">Q</option>
+                        <option value="programmer">프로그래머</option>
+                        <option value="planner">기획자</option>
+
+                    </select>
+
+                </p>
+                <p>
+                    m_mcc :
+
+                    <select name="m_mcc">
+
+                        <option value="Q08">Q08</option>
+                        <option value="programmer">프로그래머</option>
+                        <option value="planner">기획자</option>
+
+                    </select>
+
+                </p>
+                <p>
+                    m_scc :
+
+                    <select name="m_scc">
+
+                        <option value="Q08A05">Q08A05</option>
+                        <option value="programmer">프로그래머</option>
+                        <option value="planner">기획자</option>
+
+                    </select>
+
+                </p>
+
+                <input type="submit" value="전송"/>
+
+            </form>
+
+        </fieldset>
+
+        <div id='map'>
+              {{map|safe}}
+        </div>
+    </body>
+
+
+</html>

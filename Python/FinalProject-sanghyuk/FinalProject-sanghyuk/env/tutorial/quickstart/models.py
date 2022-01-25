@@ -129,3 +129,9 @@ class Small(models.Model):
     class Meta:
         managed = False
         db_table = 'small'
+
+
+class Post(models.Model):
+    m_lcc = models.CharField(max_length=30)
+    m_mcc = models.CharField(max_length=30)
+    m_scc = models.CharField(max_length=30)

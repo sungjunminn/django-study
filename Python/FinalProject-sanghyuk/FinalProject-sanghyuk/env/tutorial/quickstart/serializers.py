@@ -1,7 +1,7 @@
 # tutorial/quickstart/serializers.py
 from rest_framework import serializers
 from django.contrib.auth.models import User, Group
-from .models import AA
+from .models import AA, Post
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -17,5 +17,9 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 class AASerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = AA
-        fields = ('m_number', 'm_name', 'm_lcc', 'm_lcn', 'm_mcc', 'm_mcn', 'm_scc', 'm_scn', 'c_code', 'c_name',
-                  'gg_code', 'gg_name', 'ad_name', 'st_name', 'stad_name', 'o_mb', 'n_mb', 'lng', 'lat')
+        fields = '__all__'
+
+class PostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ('m_lcc', 'm_mcc', 'm_scc')
