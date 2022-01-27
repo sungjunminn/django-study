@@ -132,6 +132,7 @@ class Small(models.Model):
 
 
 class Post(models.Model):
+    table = models.CharField(max_length=30)
     m_lcc = models.CharField(max_length=30)
     m_mcc = models.CharField(max_length=30)
     m_scc = models.CharField(max_length=30)

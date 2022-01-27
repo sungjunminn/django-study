@@ -23,4 +23,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('asdf', views.asdf),
     path('jkl', views.PostAPIView.as_view()),
+    path('qwer', views.qwer),
 ]

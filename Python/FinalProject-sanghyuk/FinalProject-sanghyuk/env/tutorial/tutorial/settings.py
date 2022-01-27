@@ -82,7 +82,7 @@ DATABASES = {
         'NAME': 'david_db',
         'USER': 'admin',
         'PASSWORD': 'Bitbit123!',
-        'HOST': 'database-1.cmunnjma8ku1.ap-northeast-2.rds.amazonaws.com',
+        'HOST': 'database-2.cmunnjma8ku1.ap-northeast-2.rds.amazonaws.com',
         'PORT': '3306',
     }
 }

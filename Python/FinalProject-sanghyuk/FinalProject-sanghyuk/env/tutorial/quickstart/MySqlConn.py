@@ -9,7 +9,7 @@ class MySqlConn:
 
     @staticmethod
     def conn():
-        MySqlConn.connection = pymysql.connect(host='database-1.cmunnjma8ku1.ap-northeast-2.rds.amazonaws.com', port=3306, user='admin', password='Bitbit123!',
+        MySqlConn.connection = pymysql.connect(host='database-2.cmunnjma8ku1.ap-northeast-2.rds.amazonaws.com', port=3306, user='admin', password='Bitbit123!',
                                      database='david_db')
         return MySqlConn.connection
 

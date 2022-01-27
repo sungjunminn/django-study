@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Bare - Start Bootstrap Template</title>
+        <title>파이널프로젝트</title>
         <!-- Favicon-->
         <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
         <!-- Core theme CSS (includes Bootstrap)-->
@@ -34,13 +34,16 @@
 
         <section class="search-sec">
             <div class="container">
-
-
             <form action='./post/' method="POST"> {% csrf_token %}
-                <select name="m_lcc" id="addressRegion1" class="form-control search-slt"></select>
-                <select name="m_mcc" id="addressDo1" class="form-control search-slt"></select>
-                <select name="m_scc" id="addressSiGunGu1" class="form-control search-slt"></select>
-
+                <select name="table" class="form-control search-slt" style="width:300px;height:50px;">
+                    <option>선택</option>
+                    <option value="aa">서울</option>
+                    <option value="ab">경기</option>
+                </select>
+                <select name="m_lcc" id="addressRegion1" class="form-control search-slt" style="width:300px;height:50px;"></select>
+                <select name="m_mcc" id="addressDo1" class="form-control search-slt" style="width:300px;height:50px;"></select>
+                <select name="m_scc" id="addressSiGunGu1" class="form-control search-slt" style="width:300px;height:50px;"></select>
+                <button type="submit" class="btn btn-primary wrn-btn" value="전송">Search</button>
                 <script language='javascript'>
                      $(function(){
                         areaSelectMaker("select[name=m_lcc]");
@@ -167,21 +170,8 @@
                         }
                     }
                 </script>
-
-
-
-<!--                                    <br/>-->
-<!--                                    <br/>-->
-<!--                                    <br/>-->
-
-<!--                                    <select name="addressRegion" id="addressRegion2"></select>-->
-<!--                                    <select name="addressDo" id="addressDo2"></select>-->
-<!--                                    <select name="addressSiGunGu" id="addressSiGunGu2"></select>-->
-
-<!--            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
-            <input type="submit" value="전송"/>
             </form>
-                    </div>
+            </div>
         </section>
 
         <h4 class="text-center mt-5"></h4>

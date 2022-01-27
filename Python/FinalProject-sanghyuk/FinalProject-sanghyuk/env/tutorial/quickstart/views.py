@@ -132,10 +132,11 @@ class map2:
 
 
     @staticmethod
-    def MapMarker(a):
+    def MapMarker(a,table):
 
         cursor = MySqlConn.makeCursor()
-        query = str.format("select m_name,m_lcn,m_lcc,lat,lng,m_mcn,m_mcc,m_scc,m_scn from aa;")
+        # query = str.format("select m_name,m_lcn,m_lcc,lat,lng,m_mcn,m_mcc,m_scc,m_scn from aa;")
+        query = f"select m_name,m_lcn,lat,lng,m_mcn,m_scn from {table};"
         conn = MySqlConn.conn()
         df = pd.read_sql(query, conn)  # pandas로 읽기
         df_lcn = df[df['m_lcn'] == a]
@@ -161,7 +162,7 @@ class map2:
     @staticmethod
     def MapExe():
         df_select = map2.df_select
-        map_osm = folium.Map(location=[36.5053542, 127.7043419], zoom_start=7)  # 시작위치 설정
+        map_osm = folium.Map(location=[36.142803, 128.18161], zoom_start=8)  # 시작위치 설정
         marker_cluster = MarkerCluster().add_to(map_osm)  # 군집화
 
         for i in df_select.index:  # for 문 사용 위도,경도로 위치 찍기  , # 행 우선 접근 방식으로 값 추출하기
@@ -190,13 +191,15 @@ class PostAPIView(APIView):
         #     return Response(serializer.data, status=201)
         # return Response(serializer.errors, status=400)
         # serializer = PostSerializer(data=request.data)
+        table = request.data.get("table")
         a = request.data.get("m_lcc")
         b = request.data.get("m_mcc")
         c = request.data.get("m_scc")
+        print(request.data.get("table"))
         print(request.data.get("m_lcc"))
         print(request.data.get("m_mcc"))
         print(request.data.get("m_scc"))
-        map2.MapMarker(a)
+        map2.MapMarker(a,table)
         map2.MapMarker2(b)
         map2.MapMarker3(c)
         map_osm = map2.MapExe()
@@ -230,3 +233,8 @@ from django.shortcuts import get_object_or_404
 
 def asdf(request):
     return render(request, 'aa.html')
+
+def qwer(request):
+    map_osm = folium.Map(location=[36.142803, 128.18161], zoom_start=7)
+    maps = map_osm._repr_html_()
+    return render(request, 'qwer.html', {'map': maps})

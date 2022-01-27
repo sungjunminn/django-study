@@ -22,4 +22,4 @@ class AASerializer(serializers.HyperlinkedModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ('m_lcc', 'm_mcc', 'm_scc')
+        fields = ('table', 'm_lcc', 'm_mcc', 'm_scc')
