@@ -24,4 +24,5 @@ urlpatterns = [
     path('asdf', views.asdf),
     path('jkl', views.PostAPIView.as_view()),
     path('qwer', views.qwer),
+    path('abc', views.abc)
 ]

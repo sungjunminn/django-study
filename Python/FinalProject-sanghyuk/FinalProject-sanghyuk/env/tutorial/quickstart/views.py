@@ -238,3 +238,8 @@ def qwer(request):
     map_osm = folium.Map(location=[36.142803, 128.18161], zoom_start=7)
     maps = map_osm._repr_html_()
     return render(request, 'qwer.html', {'map': maps})
+
+def abc(request):
+    map_osm = folium.Map(location=[36.142803, 128.18161], zoom_start=7)
+    maps = map_osm._repr_html_()
+    return render(request, 'datamaps.html', {'map': maps})
