@@ -10,6 +10,7 @@ import folium
 from folium.plugins import MarkerCluster
 import sys
 from rest_framework.decorators import APIView
+from folium import plugins
 import json
 from django.http import HttpResponse, JsonResponse,request
 sys.setrecursionlimit(10**7)
@@ -205,7 +206,7 @@ class PostAPIView(APIView):
         map_osm = map2.MapExe()
         maps = map_osm._repr_html_()
         # return Response(serializer.errors)
-        return render(request, "post.html", {'map': maps})
+        return render(request, "map.html", {'map': maps})
 
 from django.shortcuts import get_object_or_404
 
@@ -243,3 +244,20 @@ def abc(request):
     map_osm = folium.Map(location=[36.142803, 128.18161], zoom_start=7)
     maps = map_osm._repr_html_()
     return render(request, 'datamaps.html', {'map': maps})
+
+def test(request):
+    map_osm = folium.Map(location=[36.142803, 128.18161], zoom_start=7)
+    maps = map_osm._repr_html_()
+    return render(request, 'test.html', {'map': maps})
+
+def dash(request):
+
+    return render(request, 'dashboard.html')
+
+def dashmap(request):
+    map_osm = folium.Map(location=[36.142803, 128.18161], zoom_start=7)
+    minimap = plugins.MiniMap()
+    map_osm.add_child(minimap)
+    maps = map_osm._repr_html_()
+    return render(request, 'map.html', {'map': maps})
+

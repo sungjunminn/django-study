@@ -15,7 +15,7 @@ router.register(r'AAs', views.AAViewSet)
 urlpatterns = [
     path('index',views.index),
     path('home',views.home),
-    path('post/', views.PostAPIView.as_view()),
+    path('post', views.PostAPIView.as_view()),
     # path('show',views.show),
     # path('aa',views.aa),
     path('', include(router.urls)),
@@ -24,5 +24,8 @@ urlpatterns = [
     path('asdf', views.asdf),
     path('jkl', views.PostAPIView.as_view()),
     path('qwer', views.qwer),
-    path('abc', views.abc)
+    path('abc', views.abc),
+    path('test', views.test),
+    path('dash', views.dash),
+    path('dashmap', views.dashmap),
 ]
