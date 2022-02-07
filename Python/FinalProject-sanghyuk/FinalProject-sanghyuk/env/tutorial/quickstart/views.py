@@ -206,7 +206,7 @@ class PostAPIView(APIView):
         map_osm = map2.MapExe()
         maps = map_osm._repr_html_()
         # return Response(serializer.errors)
-        return render(request, "map.html", {'map': maps})
+        return render(request, "map.html", {'map': maps,'a':a,'b':b,'c':c,'table':table})
 
 from django.shortcuts import get_object_or_404
 
@@ -260,4 +260,5 @@ def dashmap(request):
     map_osm.add_child(minimap)
     maps = map_osm._repr_html_()
     return render(request, 'map.html', {'map': maps})
+
 
