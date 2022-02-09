@@ -26,6 +26,8 @@ urlpatterns = [
     path('qwer', views.qwer),
     path('abc', views.abc),
     path('test', views.test),
-    path('dash', views.dash),
+    path('dash', views.chart_VIEW.as_view()),
     path('dashmap', views.dashmap),
+    path('dashmap2', views.dashmap2),
+    path('chart', views.ChartAPIView.as_view()),
 ]

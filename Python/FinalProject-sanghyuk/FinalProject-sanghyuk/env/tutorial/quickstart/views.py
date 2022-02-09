@@ -1,7 +1,8 @@
 from django.contrib.auth.models import User, Group
+from django.views import View
 from rest_framework import viewsets
-from .serializers import UserSerializer, GroupSerializer, AASerializer, PostSerializer
-from .models import AA, Post
+from .serializers import UserSerializer, GroupSerializer, AASerializer, PostSerializer, ChartSerializer
+from .models import AA, Post, Chart
 from django.shortcuts import render,redirect
 from rest_framework.response import Response
 from .MySqlConn import MySqlConn
@@ -11,8 +12,8 @@ from folium.plugins import MarkerCluster
 import sys
 from rest_framework.decorators import APIView
 from folium import plugins
-import json
-from django.http import HttpResponse, JsonResponse,request
+from collections import OrderedDict
+from .fusioncharts import FusionCharts
 sys.setrecursionlimit(10**7)
 
 
@@ -208,30 +209,6 @@ class PostAPIView(APIView):
         # return Response(serializer.errors)
         return render(request, "map.html", {'map': maps,'a':a,'b':b,'c':c,'table':table})
 
-from django.shortcuts import get_object_or_404
-
-# class PostDetailAPIView(APIView):
-#     def get_object(self, pk):
-#         return get_object_or_404(Post, pk=pk)
-#
-#     def get(self, request, pk, format=None):
-#         post = self.get_object(pk)
-#         serializer = PostSerializer(post)
-#         return Response(serializer.data)
-#
-#     def put(self, request, pk):
-#         post = self.get_object(pk)
-#         serializer = PostSerializer(post, data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#
-#     def delete(self, request, pk):
-#         post = self.get_object(pk)
-#         post.delete()
-#         return Response(status=status.HTTP_204_NO_CONTENT)
-
 def asdf(request):
     return render(request, 'aa.html')
 
@@ -251,14 +228,95 @@ def test(request):
     return render(request, 'test.html', {'map': maps})
 
 def dash(request):
-
+    # pie_chart_ppl = []
+    #
+    # all_sum = SeoulPplDong.all_sum.filter(dong="사직동")
+    # man_ppl = SeoulPplDong.male.filter(dong="사직동")
+    # female_ppl = SeoulPplDong.female.filter(dong="사직동")
+    # pie_chart_ppl = [man_ppl, female_ppl]
     return render(request, 'dashboard.html')
 
 def dashmap(request):
-    map_osm = folium.Map(location=[36.142803, 128.18161], zoom_start=7)
+    map_osm = folium.Map(location=[37.442803, 127.18161], zoom_start=9)
     minimap = plugins.MiniMap()
     map_osm.add_child(minimap)
     maps = map_osm._repr_html_()
     return render(request, 'map.html', {'map': maps})
 
+def dashmap2(request):
+    map_osm = folium.Map(location=[37.442803, 127.18161], zoom_start=9)
+    minimap = plugins.MiniMap()
+    map_osm.add_child(minimap)
+    maps = map_osm._repr_html_()
+    return render(request, 'map2.html', {'map': maps})
 
+
+class chart_VIEW(View):
+    def get(self, request):
+        # chartdata 선언
+        dataSource = OrderedDict()
+        dataSource["data"] = []  # chartdata는 json형식이다.
+
+        # data 값 넣기
+        dataSource["data"].append({"label": 'data1', "value": '290'})
+        dataSource["data"].append({"label": 'data2', "value": '50'})
+        dataSource["data"].append({"label": 'data3', "value": '180'})
+        dataSource["data"].append({"label": 'data4', "value": '140'})
+        dataSource["data"].append({"label": 'data5', "value": '100'})
+        dataSource["data"].append({"label": 'data6', "value": '115'})
+
+        chartConfig = OrderedDict()
+        chartConfig["caption"] = "제목"
+        chartConfig["subCaption"] = "소제목"
+        chartConfig["xAxisName"] = "x축이름"
+        chartConfig["yAxisName"] = "y축이름"
+        chartConfig["numberSuffix"] = "K"  # y축 숫자단위
+        chartConfig["theme"] = "fusion"  # 테마
+
+        # 그래프 특징 설정
+        dataSource["chart"] = chartConfig
+
+        column2D = FusionCharts("column2d", "myFirstChart", "500", "400", "chart-1", "json", dataSource)
+        # 그래프 생성
+
+        return render(request, 'dashboard.html', {'output': column2D.render()})  # render
+
+class ChartAPIView(APIView):
+    def get(self, request):
+        serializer = ChartSerializer(Chart.objects.all(), many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = ChartSerializer(data=request.data)
+        dong = request.POST.get('dong')
+        print(request.data.get("dong"))
+        column3D = chart3D(dong)
+        return render(request, 'dashboard.html', {'output': column3D.render()})  # render
+
+def chart3D(dong):
+    # chartdata 선언
+    dataSource = OrderedDict()
+    dataSource["data"] = []  # chartdata는 json형식이다.
+    query1 = f"select male,female from seoul_ppl_dong where dong = '{dong}';"
+    cursor = MySqlConn.makeCursor()
+    cursor.execute(query1)
+    a = cursor.fetchone()
+
+    # data 값 넣기
+    dataSource["data"].append({"label": '남자', "value": a[0]})
+    dataSource["data"].append({"label": '여자', "value": a[1]})
+
+    chartConfig = OrderedDict()
+    chartConfig["caption"] = f"{dong}"
+    chartConfig["subCaption"] = "남/녀 성비"
+    chartConfig["xAxisName"] = "x축이름"
+    chartConfig["yAxisName"] = "y축이름"
+    chartConfig["numberSuffix"] = "명"  # y축 숫자단위
+    chartConfig["theme"] = "fusion"  # 테마
+
+    # 그래프 특징 설정
+    dataSource["chart"] = chartConfig
+
+    C3D = FusionCharts("pie3d", "myFirstChart", "600", "400", "chart-1", "json", dataSource)
+    # 그래프 생성
+    return C3D
