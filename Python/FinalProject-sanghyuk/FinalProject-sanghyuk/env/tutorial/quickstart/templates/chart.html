@@ -1,19 +1,979 @@
+<!DOCTYPE html>
 {% load static %}
+<html lang="en">
 
 <head>
-    #first
-    <script type="text/javascript" src="{% static "fusioncharts/fusioncharts.js" %}"></script>
-    <script type="text/javascript" src="{% static "fusioncharts/fusioncharts.charts.js" %}"></script>
-    <script type="text/javascript" src="{% static "fusioncharts/themes/fusioncharts.theme.fusion.js" %}"></script>
+  <meta charset="utf-8" />
+  <link rel="apple-touch-icon" sizes="76x76" href="static/assets/img/apple-icon.png">
+  <link rel="icon" type="image/png" href="static/assets/img/favicon.png">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <title>
+    창업입지선정분석시스템
+  </title>
+  <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+  <!--     Fonts and icons     -->
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+  <!-- CSS Files -->
+  <link href="static/css/material-dashboard.css?v=2.1.0" rel="stylesheet" />
+  <!-- CSS Just for demo purpose, don't include it in your project -->
+  <link href="static/assets/demo/demo.css" rel="stylesheet" />
 
-    #second
-    <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/fusioncharts.js"></script>
-    <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/themes/fusioncharts.theme.fusion.js"></script>
+
+
+  <link rel="stylesheet" href="static/css/simplebar.css">
+  <!-- Fonts CSS -->
+  <link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <!-- Icons CSS -->
+  <link rel="stylesheet" href="static/css/feather.css">
+  <!-- Date Range Picker CSS -->
+  <link rel="stylesheet" href="static/css/daterangepicker.css">
+  <link rel="stylesheet" href="static/css/app-light.css" id="lightTheme" disabled>
+  <link rel="stylesheet" href="static/css/app-dark.css" id="darkTheme">
+  <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+
+  <script src="static/js/jquery.min.js"></script>
+  <script src="static/js/popper.min.js"></script>
+  <script src="static/js/moment.min.js"></script>
+  <script src="static/js/bootstrap.min.js"></script>
+  <script src="static/js/simplebar.min.js"></script>
+  <script src='static/js/daterangepicker.js'></script>
+  <script src='static/js/jquery.stickOnScroll.js'></script>
+  <script src="static/js/config.js"></script>
+  <script src="static/js/d3.min.js"></script>
+  <script src="static/js/topojson.min.js"></script>
+  <script src="static/js/datamaps.all.min.js"></script>
+  <script src="static/js/datamaps-zoomto.js"></script>
+  <script src="static/js/datamaps.custom.js"></script>
+  <script src="static/js/Chart.min.js"></script>
+  <script>
+    /* defind global options */
+    Chart.defaults.global.defaultFontFamily = base.defaultFontFamily;
+    Chart.defaults.global.defaultFontColor = colors.mutedColor;
+  </script>
+  <script src="static/js/gauge.min.js"></script>
+  <script src="static/js/jquery.sparkline.min.js"></script>
+  <script src="static/js/apexcharts.min.js"></script>
+  <script src="static/js/apexcharts.custom.js"></script>
+  <script src="static/js/apps.js"></script>
+
+
+  <script type="text/javascript" src="{% static "fusioncharts/fusioncharts.js" %}"></script>
+  <script type="text/javascript" src="{% static "fusioncharts/fusioncharts.charts.js" %}"></script>
+  <script type="text/javascript" src="{% static "fusioncharts/themes/fusioncharts.theme.fusion.js" %}"></script>
+  <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/fusioncharts.js"></script>
+  <script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/themes/fusioncharts.theme.fusion.js"></script>
+
 </head>
-<body>
-  <div style="font-family: 'Helvetica Neue', Arial; font-size: 16px">
-      <h3>{{ chartTitle|safe }}</h3>
-      <div id="chart-1">{{ output|safe }}</div>
-      <br/>
+
+<body class="dark-edition">
+  <div class="wrapper ">
+    <div class="sidebar" data-color="purple" data-background-color="black" data-image="static/assets/img/Doraemon.jpg">
+      <!--
+        Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
+
+        Tip 2: you can also add an image using data-image tag
+    -->
+      <div class="logo"><a href="http://www.creative-tim.com" class="simple-text logo-normal">
+          창업
+        </a></div>
+      <div class="sidebar-wrapper">
+        <div class="card-body">
+          <div class="col-12 col-lg-10 col-xl-11">
+              <p></p>
+              <p>지역/상권업종 선택</p>
+              <form action='http://127.0.0.1:8000/post' method="POST" > {% csrf_token %}
+                <select name="table" class="form-control search-slt">
+                    <option>선택</option>
+                    <option value="aa">서울</option>
+                    <option value="ab">경기</option>
+                </select>
+                <select name="addressRegion" id="addressRegion1" class="form-control search-slt"></select>
+                <select name="addressDo" id="addressSiDo1" class="form-control search-slt"></select>
+                <select name="addressSiGunGu" id="addressSiGunGu1" class="form-control search-slt"></select>
+                <button type="submit" class="btn btn-primary wrn-btn" value="전송">검색</button>
+                <script language='javascript'>
+                     $(function(){
+                      areaSelectMaker("select[name=addressRegion]");
+                      });
+
+                      var areaSelectMaker = function(target){
+                      if(target == null || $(target).length == 0){
+                          console.warn("Unkwon Area Tag");
+                          return;
+                      }
+
+                      var area = {
+                            "소매" :{
+                                "음/식료품소매" : [ "식료품점", "김치판매", "정육점", "닭집", "육류소매", "반찬가게", "유기농식품판매", "식자재판매", "어물상", "건어물상", "수산물소매", "청과물소매", "미곡상", "곡물소매", "건과류판매", "생수판매", "얼음가게", "우유판매", "식용유판매", "유과판매", "냉동식품판매", "두유판매", "드라이아이스판매", "제과재료판매" ],
+                                "종합소매점" : [ "편의점", "수퍼마켓", "잡화점", "생활용품판매", "수입품판매점", "종합소매", "혼수전문점", "백화점", "면세백화점", "아케이드/쇼핑센터", "시장/종합상가", "조합/연금매장", "구판장/직판장", "어판장", "할인점" ],
+                                "의복의류" : [ "일반의류", "캐쥬얼/스포츠의류", "여성의류전문점", "아동복판매", "맞춤양장/양장점", "셔츠/내의/속옷", "맞춤양복/양복점", "남성의류전문점", "한복/갈옷/민속옷", "가죽/모피의류", "예복/웨딩드레스", "청바지판매", "유니폼/맞춤복/단체복", "법복(승복)판매", "교복판매", "섬유/직물/주단", "특수복판매" ],
+                                "가방/신발/액세서리" : [ "신발소매", "구두제화/캐주얼화", "기능성신발판매", "액세서리판매", "휴대폰튜닝", "양품점", "가발판매", "우산/우의판매", "가방/가죽제품소매", "재봉용품판매" ],
+                                "애견/애완/동물" : [ "애견/애완/동물사육판매", "애완동물 미용실" ],
+                                "운동/경기용품소매" : [ "운동/경기용품", "건강/헬스용품", "자전거판매", "낚시용품판매", "골프용품판매", "수영용품판매", "등산용품판매", "스키장비판매", "인라인스케이트판매", "볼링용품판매", "수상운동용품판매", "총포상" ],
+                                "화장품소매" : [ "화장품판매점", "향수전문점" ],
+                                "의약/의료품소매" : [ "의료용품소매", "보청기판매", "의족/의수판매", "건강보조기구판매", "의약품소매" ],
+                                "자동차/자동차용품" : [ "자동차판매", "중고자동차판매", "카오디오전문", "타이어판매", "네비게이션판매", "자동차부품판매", "자동차장식품판매", "중고타이어판매", "수입자동차판매", "수입중고자동차판매", "자동차유리전문점" ]
+                            },
+                            "생활서비스" :{
+                                "이/미용/건강" : [ "여성미용실", "발/네일케어", "비만/피부관리", "남성미용실" ],
+                                "세탁/기사서비스" : [ "세탁소/빨래방", "신발세탁", "세탁대행", "방앗간/정미소", "청소/소독", "소파침대카펫트세탁", "솜틀집", "가죽모피세탁", "냉온수기소독/수리" ],
+                                "사진" : [ "사진관", "상업사진", "스티커사진방" ],
+                                "물품기기대여" : [ "가정용기구/기기임대", "오락/스포츠용품대여", "비디오/오디오테이프대여", "도서/만화대여", "도서/만화대여", "생활용품대여", "의류/한복대여", "물수건대여", "컴퓨터대여", "사무기기대여", "렌트카", "비디오카메라대여", "악기대여", "장식품대여", "연극공연/영화제작용품임대", "화환/화분대여", "물품대여종합" ],
+                                "대중목욕탕/휴게" : [ "욕탕업-종합", "사우나/증기탕/온천", "목욕업-찜질방", "휴게텔" ],
+                                "자동차/이륜차" : [ "자동차정비/카센타", "자전거판매/수리", "오토바이판매/수리", "세차장", "광택전문", "주차장운영" ],
+                                "주유소/충전소" : [ "주유소", "차량가스충전소", "차량연료소매-종합" ],
+                                "예식/의례/관혼상제" : [ "예식장/예식서비스", "제사음식", "폐백전문", "결혼상담소" ]
+                            },
+                            "부동산" :{
+                                "부동산중개" : [ "부동산중개" ],
+                                "분양" : [ "주택공급", "상가분양", "사무실분양", "건물분양-종합" ]
+                            },
+                            "관광/여가/오락" :{
+                                "PC/오락/당구/볼링등" : [ "인터넷PC방", "비디오감상실", "당구장", "오락용사격장", "탁구장", "볼링장", "포켓볼장", "전자오락실", "기원" ],
+                                "무도/유흥/가무" : [ "노래방", "나이트클럽", "극장식유흥주점", "무도유흥주점-종합", "한국식유흥주점", "무도장" ],
+                                "연극/영화/극장" : [ "음악감상", "연극/음악/예술관련기타" ],
+                                "스포츠/운동" : [ "실내야구연습장", "실외야구연습장", "실내스케이트장", "롤러스케이트장", "서바이벌게임장", "스케이트장", "실내낚시" ],
+                                "요가/단전/마사지" : [ "요가/단식", "단전호흡", "체형미교실", "지압원", "단식원", "스포츠마사지", "안마시술소", "활기원" ],
+                                "놀이/여가/취미" : [ "낚시터", "주말농장", "기타오락관련산업" ]
+                            },
+                            "숙박" : {
+                                "모텔/여관/여인숙" : [ "모텔/여관/여인숙" ],
+                                "캠프/별장/펜션" : [ "캠프/별장/펜션" ],
+                                "민박/하숙" : [ "민박/하숙" ]
+                            },
+                            "스포츠" : {
+                                "운영관리시설" : [ "운동경기협회", "프로스포츠경기운영", "프로야구", "프로축구", "프로골프", "기타경기후원업/경기단체", "기타운영설비" ],
+                                "실내운동시설" : [ "체육관", "실내테니스장", "실내수영장", "복싱도장", "실내골프연습장", "헬스클럽", "스포츠센터", "킥복싱", "스커시장", "택견도장", "쿵후도장", "이종격투기", "기타실내운동시설" ],
+                                "실외운동시설" : [ "야구장", "축구장", "스키장", "실외골프연습장", "골프장", "테니스장", "수영장", "승마장", "게이트볼장", "래프팅", "행글라이더", "수상스키", "인공암벽", "스킨스쿠버강습", "풋살경기장", "기타실외운동시설" ]
+                            },
+                            "음식" : {
+                                "한식" : [ "한식/백반/한정식", "갈비/삼겹살", "곱창/양구이전문", "한정식전문", "해장국/감자탕", "돌솥/비빔밥전문점", "부대찌개/섞어찌개", "족발/보쌈전문", "설렁탕집", "쌈밥전문", "두부요리전문", "재첩국전문", "파전전문", "추어탕전문", "순두부전문", "보리밥전문", "버섯전문점", "황태전문", "냉면집", "기사식당", "기타고기요리" ],
+                                "중식" : [ "중국음식/중국집", "탕수육전문점" ],
+                                "일식/수산물" : [ "횟집", "음식점-일식", "음식점-초밥전문", "참치전문점", "해물찜/탕전문", "아구전문", "민물장어전문", "매운탕전문", "조개구이전문", "바닷가재/게요리전문", "갈치/생선구이", "낙지/오징어", "곰장어전문", "고등어전문", "굴요리전문", "게장전문", "홍어전문", "복전문", "수산물전문음식점-종합" ],
+                                "분식" : [ "라면김밥분식", "국수/만두/칼국수", "떡볶이전문", "우동전문점", "스낵" ],
+                                "닭/오리요리" : [ "삼계탕전문", "닭갈비전문", "닭도리탕전문", "찜닭전문점", "불닭전문", "옻닭전문", "토종닭전문", "후라이드/양념치킨", "오리고기전문", "닭내장/닭발요리" ],
+                                "양식" : [ "정통양식/경양식", "돈가스전문점", "카레전문점", "스파게티전문점", "패밀리레스토랑", "바베큐전문", "기타전문서양음식점", "스테이크전문점" ],
+                                "패스트푸드" : [ "피자전문", "도시락전문점", "핫도그", "패트스푸드", "샌드위치전문점", "도너츠전문", "아이스크림판매", "유산균아이스크림전문", "생과자점", "토스트전문" ],
+                                "제과제빵떡케익" : [ "제과점", "케익전문점", "떡전문", "떡/한과집", "찐빵전문" ],
+                                "유흥주점" : [ "호프/맥주", "소주방/포장마차", "꼬치구이전문점", "민속주점", "로바다야끼", "관광/유흥주점", "기타일반유흥주점", "빠/카페/스탠드빠", "락카페", "룸살롱/단란주점" ],
+                                "별식/퓨전요리" : [ "죽전문점", "샤브샤브전문", "철판구이요리전문", "퓨전음식전문", "순대전문점", "징기스칸요리전문", "돌구이요리전문", "동남아음식전문점", "사철탕전문" ],
+                                "커피점/카페" : [ "커피전문점/카페/다방", "생과일주스전문점", "보드게임카페", "사주카페", "전통찻집/인삼찻집", "애견카페" ],
+                                "음식배달서비스" : [ "야식집", "국/찌개배달", "음식출장조달" ]
+                            },
+                            "학문/교육" : {
+                                "학원-보습교습입시" : [ "학원-입시", "학원-편입", "학원-검정고시" ],
+                                "학원-자격/국가고시" : [ "학원-간호조무사", "학원-건축토목기술", "학원-공인중개사", "학원-관광통역", "학원-국가고시", "학원-기계/금형기술", "학원-도배", "학원-보석감정", "학원-미용", "학원-자동차운전", "학원-자동차정비", "학원-전기기술", "학원-제과기술", "학원-중장비", "학원-항공기술", "학원-환경기사", "학원-국가고시", "학원-속기", "학원-이용", "학원-경찰" ],
+                                "학원-어학" : [ "학원-외국어/어학", "학원-어린이영어" ],
+                                "학원-음악미술무용" : [ "서예/서화/미술", "피아노/바이올린/기타", "학원-무용", "학원-국악" ],
+                                "학원-컴퓨터" : [ "컴퓨터학원" ],
+                                "학원-예능취미체육" : [ "학원-가요", "학원-기억법", "학원-꽂꽂이", "학원-자수/동양자수", "학원-레크리에이션", "학원-배우/탤런트", "학원-사교춤", "학원-사진", "학원-요리", "학원-주산암산부기속셈", "학원-지점토", "학원-펜글씨/한문", "학원-에어로빅", "학원-웅변", "학원-바둑", "학원-스포츠/재즈댄스", "학원-마술", "학원-서당", "태권도장", "검도도장", "유도장", "레크레이션지도/상담" ],
+                                "유아교육" : [ "놀이방", "어린이집", "실내놀이터-유아", "블럭놀이방", "동화구연", "유아교육기관기타" ],
+                                "학원기타" : [ "학원(종합)", "학원-모델", "운전연수전문", "학원-실내운전", "학원-역학", "학원-심리변론", "예절지도", "학원-말더듬", "비행훈련원", "학원-기타" ],
+                                "도서관/독서실" : [ "독서실", "고시원", "이동도서관운영" ]
+                                }
+                        };
+
+                      for(i=0; i<$(target).length; i++){
+                      (function(z){
+                          var a1 = $(target).eq(z);
+                          var a2 = a1.next();
+                          var a3 = a2.next();
+
+                          //초기화
+                          init(a1, true);
+
+                          //권역 기본 생성
+                          var areaKeys1 = Object.keys(area);
+                          areaKeys1.forEach(function(Region){
+                              a1.append("<option value="+Region+">"+Region+"</option>");
+                          });
+
+                          //변경 이벤트
+                          $(a1).on("change", function(){
+                              init($(this), false);
+                              var Region = $(this).val();
+                              var keys = Object.keys(area[Region]);
+                              keys.forEach(function(Do){
+                                  a2.append("<option value="+Do+">"+Do+"</option>");
+                              });
+                          });
+
+                          $(a2).on("change", function(){
+                              a3.empty().append("<option value=''>선택</option>");
+                              var Region = a1.val();
+                              var Do = $(this).val();
+                              var keys = Object.keys(area[Region][Do]);
+                              keys.forEach(function(SiGunGu){
+                                  a3.append("<option value="+area[Region][Do][SiGunGu]+">"+area[Region][Do][SiGunGu]+"</option>");
+                              });
+                          });
+                      })(i);
+
+                      function init(t, first){
+                          first ? t.empty().append("<option value=''>선택</option>") : "";
+                          t.next().empty().append("<option value=''>선택</option>");
+                          t.next().next().empty().append("<option value=''>선택</option>");
+                      }
+                  }
+              }
+                </script>
+              </form>
+          </div>
+        </div>
+
+
+      </div>
+
+    </div>
+    <div class="main-panel">
+      <!-- Navbar -->
+      <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top " id="navigation-example">
+        <div class="container-fluid">
+          <div class="navbar-wrapper">
+            <a class="navbar-brand" href="javascript:void(0)">분석</a>
+          </div>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation" data-target="#navigation-example">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="navbar-toggler-icon icon-bar"></span>
+            <span class="navbar-toggler-icon icon-bar"></span>
+            <span class="navbar-toggler-icon icon-bar"></span>
+          </button>
+          <div class="collapse navbar-collapse justify-content-end">
+            <form class="navbar-form">
+              <div class="input-group no-border">
+                <input type="text" value="" class="form-control" placeholder="Search...">
+                <button type="submit" class="btn btn-default btn-round btn-just-icon">
+                  <i class="material-icons">search</i>
+                  <div class="ripple-container"></div>
+                </button>
+              </div>
+            </form>
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link" href="javascript:void(0)">
+                  <i class="material-icons">dashboard</i>
+                  <p class="d-lg-none d-md-block">
+                    Stats
+                  </p>
+                </a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link" href="javscript:void(0)" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="material-icons">notifications</i>
+                  <span class="notification">5</span>
+                  <p class="d-lg-none d-md-block">
+                    Some Actions
+                  </p>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                  <a class="dropdown-item" href="javascript:void(0)">Mike John responded to your email</a>
+                  <a class="dropdown-item" href="javascript:void(0)">You have 5 new tasks</a>
+                  <a class="dropdown-item" href="javascript:void(0)">You're now friend with Andrew</a>
+                  <a class="dropdown-item" href="javascript:void(0)">Another Notification</a>
+                  <a class="dropdown-item" href="javascript:void(0)">Another One</a>
+                </div>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="javascript:void(0)">
+                  <i class="material-icons">person</i>
+                  <p class="d-lg-none d-md-block">
+                    Account
+                  </p>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <!-- End Navbar -->
+      <div class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-lg-6 col-md-12">
+<!--              <div class="card">-->
+              <div style="font-family: 'Helvetica Neue', Arial; font-size: 16px">
+                  <h3>{{ chartTitle|safe }}</h3>
+                  <div id="chart-1">{{ output|safe }}</div>
+                  <br/>
+              </div>
+<!--            </div>-->
+            </div>
+            <div class="col-lg-6 col-md-12">
+              <div class="card card-chart">
+                <div class="card-header card-header-warning">
+                  <div class="ct-chart" id="websiteViewsChart"></div>
+                </div>
+                <div class="card-body">
+                  <h4 class="card-title">Email Subscriptions</h4>
+                  <p class="card-category">Last Campaign Performance</p>
+                </div>
+                <div class="card-footer">
+                  <div class="stats">
+                    <i class="material-icons">access_time</i> campaign sent 2 days ago
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="row">
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+              <div class="card card-stats">
+                <div class="card-header card-header-warning card-header-icon">
+                  <div class="card-icon">
+                    <i class="material-icons">content_copy</i>
+                  </div>
+                  <p class="card-category">Used Space</p>
+                  <h3 class="card-title">48/50
+                    <small>GB</small>
+                  </h3>
+                </div>
+                <div class="card-footer">
+                  <div class="stats">
+                    <i class="material-icons text-warning">warning</i>
+                    <a href="#pablo" class="warning-link">Get More Space...</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+              <div class="card card-stats">
+                <div class="card-header card-header-success card-header-icon">
+                  <div class="card-icon">
+                    <i class="material-icons">store</i>
+                  </div>
+                  <p class="card-category">Revenue</p>
+                  <h3 class="card-title">$34,245</h3>
+                </div>
+                <div class="card-footer">
+                  <div class="stats">
+                    <i class="material-icons">date_range</i> Last 24 Hours
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+              <div class="card card-stats">
+                <div class="card-header card-header-danger card-header-icon">
+                  <div class="card-icon">
+                    <i class="material-icons">info_outline</i>
+                  </div>
+                  <p class="card-category">Fixed Issues</p>
+                  <h3 class="card-title">75</h3>
+                </div>
+                <div class="card-footer">
+                  <div class="stats">
+                    <i class="material-icons">local_offer</i> Tracked from Github
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+              <div class="card card-stats">
+                <div class="card-header card-header-info card-header-icon">
+                  <div class="card-icon">
+                    <i class="fa fa-twitter"></i>
+                  </div>
+                  <p class="card-category">Followers</p>
+                  <h3 class="card-title">+245</h3>
+                </div>
+                <div class="card-footer">
+                  <div class="stats">
+                    <i class="material-icons">update</i> Just Updated
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-6 col-md-12">
+              <div class="card">
+                <div class="card-header card-header-primary">
+                  <h4 class="card-title">Employees Stats</h4>
+                  <p class="card-category">New employees on 15th September, 2016</p>
+                </div>
+                <div class="card-body table-responsive">
+                  <table class="table table-hover">
+                    <thead class="text-warning">
+                      <th>ID</th>
+                      <th>Name</th>
+                      <th>Salary</th>
+                      <th>Country</th>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>1</td>
+                        <td>Dakota Rice</td>
+                        <td>$36,738</td>
+                        <td>Niger</td>
+                      </tr>
+                      <tr>
+                        <td>2</td>
+                        <td>Minerva Hooper</td>
+                        <td>$23,789</td>
+                        <td>Curaçao</td>
+                      </tr>
+                      <tr>
+                        <td>3</td>
+                        <td>Sage Rodriguez</td>
+                        <td>$56,142</td>
+                        <td>Netherlands</td>
+                      </tr>
+                      <tr>
+                        <td>4</td>
+                        <td>Philip Chaney</td>
+                        <td>$38,735</td>
+                        <td>Korea, South</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-12">
+              <div class="card">
+                <div class="card-header card-header-tabs card-header-warning">
+                  <div class="nav-tabs-navigation">
+                    <div class="nav-tabs-wrapper">
+                      <span class="nav-tabs-title">Tasks:</span>
+                      <ul class="nav nav-tabs" data-tabs="tabs">
+                        <li class="nav-item">
+                          <a class="nav-link active" href="#profile" data-toggle="tab">
+                            <i class="material-icons">bug_report</i> Bugs
+                            <div class="ripple-container"></div>
+                          </a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" href="#messages" data-toggle="tab">
+                            <i class="material-icons">code</i> Website
+                            <div class="ripple-container"></div>
+                          </a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" href="#settings" data-toggle="tab">
+                            <i class="material-icons">cloud</i> Server
+                            <div class="ripple-container"></div>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="tab-content">
+                    <div class="tab-pane active" id="profile">
+                      <table class="table">
+                        <tbody>
+                          <tr>
+                            <td>
+                              <div class="form-check">
+                                <label class="form-check-label">
+                                  <input class="form-check-input" type="checkbox" value="" checked>
+                                  <span class="form-check-sign">
+                                    <span class="check"></span>
+                                  </span>
+                                </label>
+                              </div>
+                            </td>
+                            <td>Sign contract for "What are conference organizers afraid of?"</td>
+                            <td class="td-actions text-right">
+                              <button type="button" rel="tooltip" title="Edit Task" class="btn btn-white btn-link btn-sm">
+                                <i class="material-icons">edit</i>
+                              </button>
+                              <button type="button" rel="tooltip" title="Remove" class="btn btn-white btn-link btn-sm">
+                                <i class="material-icons">close</i>
+                              </button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <div class="form-check">
+                                <label class="form-check-label">
+                                  <input class="form-check-input" type="checkbox" value="">
+                                  <span class="form-check-sign">
+                                    <span class="check"></span>
+                                  </span>
+                                </label>
+                              </div>
+                            </td>
+                            <td>Lines From Great Russian Literature? Or E-mails From My Boss?</td>
+                            <td class="td-actions text-right">
+                              <button type="button" rel="tooltip" title="Edit Task" class="btn btn-white btn-link btn-sm">
+                                <i class="material-icons">edit</i>
+                              </button>
+                              <button type="button" rel="tooltip" title="Remove" class="btn btn-white btn-link btn-sm">
+                                <i class="material-icons">close</i>
+                              </button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <div class="form-check">
+                                <label class="form-check-label">
+                                  <input class="form-check-input" type="checkbox" value="">
+                                  <span class="form-check-sign">
+                                    <span class="check"></span>
+                                  </span>
+                                </label>
+                              </div>
+                            </td>
+                            <td>Flooded: One year later, assessing what was lost and what was found when a ravaging rain swept through metro Detroit
+                            </td>
+                            <td class="td-actions text-right">
+                              <button type="button" rel="tooltip" title="Edit Task" class="btn btn-white btn-link btn-sm">
+                                <i class="material-icons">edit</i>
+                              </button>
+                              <button type="button" rel="tooltip" title="Remove" class="btn btn-white btn-link btn-sm">
+                                <i class="material-icons">close</i>
+                              </button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <div class="form-check">
+                                <label class="form-check-label">
+                                  <input class="form-check-input" type="checkbox" value="" checked>
+                                  <span class="form-check-sign">
+                                    <span class="check"></span>
+                                  </span>
+                                </label>
+                              </div>
+                            </td>
+                            <td>Create 4 Invisible User Experiences you Never Knew About</td>
+                            <td class="td-actions text-right">
+                              <button type="button" rel="tooltip" title="Edit Task" class="btn btn-white btn-link btn-sm">
+                                <i class="material-icons">edit</i>
+                              </button>
+                              <button type="button" rel="tooltip" title="Remove" class="btn btn-white btn-link btn-sm">
+                                <i class="material-icons">close</i>
+                              </button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="tab-pane" id="messages">
+                      <table class="table">
+                        <tbody>
+                          <tr>
+                            <td>
+                              <div class="form-check">
+                                <label class="form-check-label">
+                                  <input class="form-check-input" type="checkbox" value="" checked>
+                                  <span class="form-check-sign">
+                                    <span class="check"></span>
+                                  </span>
+                                </label>
+                              </div>
+                            </td>
+                            <td>Flooded: One year later, assessing what was lost and what was found when a ravaging rain swept through metro Detroit
+                            </td>
+                            <td class="td-actions text-right">
+                              <button type="button" rel="tooltip" title="Edit Task" class="btn btn-white btn-link btn-sm">
+                                <i class="material-icons">edit</i>
+                              </button>
+                              <button type="button" rel="tooltip" title="Remove" class="btn btn-white btn-link btn-sm">
+                                <i class="material-icons">close</i>
+                              </button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <div class="form-check">
+                                <label class="form-check-label">
+                                  <input class="form-check-input" type="checkbox" value="">
+                                  <span class="form-check-sign">
+                                    <span class="check"></span>
+                                  </span>
+                                </label>
+                              </div>
+                            </td>
+                            <td>Sign contract for "What are conference organizers afraid of?"</td>
+                            <td class="td-actions text-right">
+                              <button type="button" rel="tooltip" title="Edit Task" class="btn btn-white btn-link btn-sm">
+                                <i class="material-icons">edit</i>
+                              </button>
+                              <button type="button" rel="tooltip" title="Remove" class="btn btn-white btn-link btn-sm">
+                                <i class="material-icons">close</i>
+                              </button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="tab-pane" id="settings">
+                      <table class="table">
+                        <tbody>
+                          <tr>
+                            <td>
+                              <div class="form-check">
+                                <label class="form-check-label">
+                                  <input class="form-check-input" type="checkbox" value="">
+                                  <span class="form-check-sign">
+                                    <span class="check"></span>
+                                  </span>
+                                </label>
+                              </div>
+                            </td>
+                            <td>Lines From Great Russian Literature? Or E-mails From My Boss?</td>
+                            <td class="td-actions text-right">
+                              <button type="button" rel="tooltip" title="Edit Task" class="btn btn-white btn-link btn-sm">
+                                <i class="material-icons">edit</i>
+                              </button>
+                              <button type="button" rel="tooltip" title="Remove" class="btn btn-white btn-link btn-sm">
+                                <i class="material-icons">close</i>
+                              </button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <div class="form-check">
+                                <label class="form-check-label">
+                                  <input class="form-check-input" type="checkbox" value="" checked>
+                                  <span class="form-check-sign">
+                                    <span class="check"></span>
+                                  </span>
+                                </label>
+                              </div>
+                            </td>
+                            <td>Flooded: One year later, assessing what was lost and what was found when a ravaging rain swept through metro Detroit
+                            </td>
+                            <td class="td-actions text-right">
+                              <button type="button" rel="tooltip" title="Edit Task" class="btn btn-white btn-link btn-sm">
+                                <i class="material-icons">edit</i>
+                              </button>
+                              <button type="button" rel="tooltip" title="Remove" class="btn btn-white btn-link btn-sm">
+                                <i class="material-icons">close</i>
+                              </button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <div class="form-check">
+                                <label class="form-check-label">
+                                  <input class="form-check-input" type="checkbox" value="" checked>
+                                  <span class="form-check-sign">
+                                    <span class="check"></span>
+                                  </span>
+                                </label>
+                              </div>
+                            </td>
+                            <td>Sign contract for "What are conference organizers afraid of?"</td>
+                            <td class="td-actions text-right">
+                              <button type="button" rel="tooltip" title="Edit Task" class="btn btn-white btn-link btn-sm">
+                                <i class="material-icons">edit</i>
+                              </button>
+                              <button type="button" rel="tooltip" title="Remove" class="btn btn-white btn-link btn-sm">
+                                <i class="material-icons">close</i>
+                              </button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class="footer">
+        <div class="container-fluid">
+          <nav class="float-left">
+            <ul>
+              <li>
+                <a href="https://www.creative-tim.com">
+                  Creative Tim
+                </a>
+              </li>
+              <li>
+                <a href="https://creative-tim.com/presentation">
+                  About Us
+                </a>
+              </li>
+              <li>
+                <a href="http://blog.creative-tim.com">
+                  Blog
+                </a>
+              </li>
+              <li>
+                <a href="https://www.creative-tim.com/license">
+                  Licenses
+                </a>
+              </li>
+            </ul>
+          </nav>
+          <div class="copyright float-right" id="date">
+            , made with <i class="material-icons">favorite</i> by
+            <a href="https://www.creative-tim.com" target="_blank">Creative Tim</a> for a better web.
+          </div>
+        </div>
+      </footer>
+      <script>
+        const x = new Date().getFullYear();
+        let date = document.getElementById('date');
+        date.innerHTML = '&copy; ' + x + date.innerHTML;
+      </script>
+    </div>
   </div>
+  <div class="fixed-plugin">
+    <div class="dropdown show-dropdown">
+      <a href="#" data-toggle="dropdown">
+        <i class="fa fa-cog fa-2x"> </i>
+      </a>
+      <ul class="dropdown-menu">
+        <li class="header-title"> Sidebar Filters</li>
+        <li class="adjustments-line">
+          <a href="javascript:void(0)" class="switch-trigger active-color">
+            <div class="badge-colors ml-auto mr-auto">
+              <span class="badge filter badge-purple active" data-color="purple"></span>
+              <span class="badge filter badge-azure" data-color="azure"></span>
+              <span class="badge filter badge-green" data-color="green"></span>
+              <span class="badge filter badge-warning" data-color="orange"></span>
+              <span class="badge filter badge-danger" data-color="danger"></span>
+            </div>
+            <div class="clearfix"></div>
+          </a>
+        </li>
+        <li class="header-title">Images</li>
+        <li>
+          <a class="img-holder switch-trigger" href="javascript:void(0)">
+            <img src="static/assets/img/sidebar-1.jpg" alt="">
+          </a>
+        </li>
+        <li class="active">
+          <a class="img-holder switch-trigger" href="javascript:void(0)">
+            <img src="static/assets/img/sidebar-2.jpg" alt="">
+          </a>
+        </li>
+        <li>
+          <a class="img-holder switch-trigger" href="javascript:void(0)">
+            <img src="static/assets/img/sidebar-3.jpg" alt="">
+          </a>
+        </li>
+        <li>
+          <a class="img-holder switch-trigger" href="javascript:void(0)">
+            <img src="static/assets/img/sidebar-4.jpg" alt="">
+          </a>
+        </li>
+        <li class="button-container">
+          <a href="https://www.creative-tim.com/product/material-dashboard-dark" target="_blank" class="btn btn-primary btn-block">Free Download</a>
+        </li>
+        <!-- <li class="header-title">Want more components?</li>
+            <li class="button-container">
+                <a href="https://www.creative-tim.com/product/material-dashboard-pro" target="_blank" class="btn btn-warning btn-block">
+                  Get the pro version
+                </a>
+            </li> -->
+        <li class="button-container">
+          <a href="https://demos.creative-tim.com/material-dashboard-dark/docs/2.0/getting-started/introduction.html" target="_blank" class="btn btn-default btn-block">
+            View Documentation
+          </a>
+        </li>
+        <li class="button-container github-star">
+          <a class="github-button" href="https://github.com/creativetimofficial/material-dashboard/tree/dark-edition" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star ntkme/github-buttons on GitHub">Star</a>
+        </li>
+        <li class="header-title">Thank you for 95 shares!</li>
+        <li class="button-container text-center">
+          <button id="twitter" class="btn btn-round btn-twitter"><i class="fa fa-twitter"></i> &middot; 45</button>
+          <button id="facebook" class="btn btn-round btn-facebook"><i class="fa fa-facebook-f"></i> &middot; 50</button>
+          <br>
+          <br>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <!--   Core JS Files   -->
+  <script src="static/js/core/jquery.min.js"></script>
+  <script src="static/js/core/popper.min.js"></script>
+  <script src="static/js/core/bootstrap-material-design.min.js"></script>
+  <script src="https://unpkg.com/default-passive-events"></script>
+  <script src="static/js/plugins/perfect-scrollbar.jquery.min.js"></script>
+  <!-- Place this tag in your head or just before your close body tag. -->
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+  <!-- Chartist JS -->
+<!--  <script src="static/js/plugins/chartist.min.js"></script>-->
+
+  <!--  Notifications Plugin    -->
+  <script src="static/js/plugins/bootstrap-notify.js"></script>
+  <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+  <script src="static/js/material-dashboard.js?v=2.1.0"></script>
+  <!-- Material Dashboard DEMO methods, don't include it in your project! -->
+  <script src="static/demo/demo.js"></script>
+  <script>
+    $(document).ready(function() {
+      $().ready(function() {
+        $sidebar = $('.sidebar');
+
+        $sidebar_img_container = $sidebar.find('.sidebar-background');
+
+        $full_page = $('.full-page');
+
+        $sidebar_responsive = $('body > .navbar-collapse');
+
+        window_width = $(window).width();
+
+        $('.fixed-plugin a').click(function(event) {
+          // Alex if we click on switch, stop propagation of the event, so the dropdown will not be hide, otherwise we set the  section active
+          if ($(this).hasClass('switch-trigger')) {
+            if (event.stopPropagation) {
+              event.stopPropagation();
+            } else if (window.event) {
+              window.event.cancelBubble = true;
+            }
+          }
+        });
+
+        $('.fixed-plugin .active-color span').click(function() {
+          $full_page_background = $('.full-page-background');
+
+          $(this).siblings().removeClass('active');
+          $(this).addClass('active');
+
+          var new_color = $(this).data('color');
+
+          if ($sidebar.length != 0) {
+            $sidebar.attr('data-color', new_color);
+          }
+
+          if ($full_page.length != 0) {
+            $full_page.attr('filter-color', new_color);
+          }
+
+          if ($sidebar_responsive.length != 0) {
+            $sidebar_responsive.attr('data-color', new_color);
+          }
+        });
+
+        $('.fixed-plugin .background-color .badge').click(function() {
+          $(this).siblings().removeClass('active');
+          $(this).addClass('active');
+
+          var new_color = $(this).data('background-color');
+
+          if ($sidebar.length != 0) {
+            $sidebar.attr('data-background-color', new_color);
+          }
+        });
+
+        $('.fixed-plugin .img-holder').click(function() {
+          $full_page_background = $('.full-page-background');
+
+          $(this).parent('li').siblings().removeClass('active');
+          $(this).parent('li').addClass('active');
+
+
+          var new_image = $(this).find("img").attr('src');
+
+          if ($sidebar_img_container.length != 0 && $('.switch-sidebar-image input:checked').length != 0) {
+            $sidebar_img_container.fadeOut('fast', function() {
+              $sidebar_img_container.css('background-image', 'url("' + new_image + '")');
+              $sidebar_img_container.fadeIn('fast');
+            });
+          }
+
+          if ($full_page_background.length != 0 && $('.switch-sidebar-image input:checked').length != 0) {
+            var new_image_full_page = $('.fixed-plugin li.active .img-holder').find('img').data('src');
+
+            $full_page_background.fadeOut('fast', function() {
+              $full_page_background.css('background-image', 'url("' + new_image_full_page + '")');
+              $full_page_background.fadeIn('fast');
+            });
+          }
+
+          if ($('.switch-sidebar-image input:checked').length == 0) {
+            var new_image = $('.fixed-plugin li.active .img-holder').find("img").attr('src');
+            var new_image_full_page = $('.fixed-plugin li.active .img-holder').find('img').data('src');
+
+            $sidebar_img_container.css('background-image', 'url("' + new_image + '")');
+            $full_page_background.css('background-image', 'url("' + new_image_full_page + '")');
+          }
+
+          if ($sidebar_responsive.length != 0) {
+            $sidebar_responsive.css('background-image', 'url("' + new_image + '")');
+          }
+        });
+
+        $('.switch-sidebar-image input').change(function() {
+          $full_page_background = $('.full-page-background');
+
+          $input = $(this);
+
+          if ($input.is(':checked')) {
+            if ($sidebar_img_container.length != 0) {
+              $sidebar_img_container.fadeIn('fast');
+              $sidebar.attr('data-image', '#');
+            }
+
+            if ($full_page_background.length != 0) {
+              $full_page_background.fadeIn('fast');
+              $full_page.attr('data-image', '#');
+            }
+
+            background_image = true;
+          } else {
+            if ($sidebar_img_container.length != 0) {
+              $sidebar.removeAttr('data-image');
+              $sidebar_img_container.fadeOut('fast');
+            }
+
+            if ($full_page_background.length != 0) {
+              $full_page.removeAttr('data-image', '#');
+              $full_page_background.fadeOut('fast');
+            }
+
+            background_image = false;
+          }
+        });
+
+        $('.switch-sidebar-mini input').change(function() {
+          $body = $('body');
+
+          $input = $(this);
+
+          if (md.misc.sidebar_mini_active == true) {
+            $('body').removeClass('sidebar-mini');
+            md.misc.sidebar_mini_active = false;
+
+            $('.sidebar .sidebar-wrapper, .main-panel').perfectScrollbar();
+
+          } else {
+
+            $('.sidebar .sidebar-wrapper, .main-panel').perfectScrollbar('destroy');
+
+            setTimeout(function() {
+              $('body').addClass('sidebar-mini');
+
+              md.misc.sidebar_mini_active = true;
+            }, 300);
+          }
+
+          // we simulate the window Resize so the charts will get updated in realtime.
+          var simulateWindowResize = setInterval(function() {
+            window.dispatchEvent(new Event('resize'));
+          }, 180);
+
+          // we stop the simulation of Window Resize after the animations are completed
+          setTimeout(function() {
+            clearInterval(simulateWindowResize);
+          }, 1000);
+
+        });
+      });
+    });
+  </script>
+  <script>
+    $(document).ready(function() {
+      // Javascript method's body can be found in assets/js/demos.js
+      md.initDashboardPageCharts();
+
+    });
+  </script>
+
+
+
 </body>
+
+</html>
