@@ -20,4 +20,6 @@ urlpatterns = [
     path('post', views.PostAPIView.as_view()),   #지역/상권업종 선택해서 post하는 화면
     path('chart', views.ChartAPIView.as_view()), #지역선택 post해서 차트 그려주는 화면
     # path('dash', views.chart_VIEW.as_view()),
+    path('new', views.new),
+    path('new1', views.new1),
 ]
