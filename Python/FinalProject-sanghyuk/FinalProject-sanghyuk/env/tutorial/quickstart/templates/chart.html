@@ -343,7 +343,7 @@
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                             <i class="fa fa-envelope me-lg-2"></i>
-                            <span class="d-none d-lg-inline-flex">Message</span>
+                            <span class="d-none d-lg-inline-flex">{{gumae}}</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
                             <a href="#" class="dropdown-item">
@@ -422,7 +422,8 @@
             <div class="container-fluid pt-4 px-4">
                 <div class="row g-4">
                     <div class="col-sm-12 col-xl-6">
-                        <h4 class="mb-4"><strong style="color:deeppink;">{{apt_dong}}</strong> <strong style="color:dodgerblue;">인구별 그래프</strong></h4>
+                        <h4 class="mb-4">분석지역 : <strong style="color:deeppink;">{{apt_dong}}</strong></h4>
+                        <h4 class="mb-4"><strong style="color:dodgerblue;">인구 분석</strong></h4>
                         <div style="font-family: 'Helvetica Neue', Arial; font-size: 16px">
                         <h3>{{ chartTitle|safe }}</h3>
                         <div id="chart-1">{{ output|safe }}</div>
@@ -430,6 +431,8 @@
                     </div>
                     </div>
                     <div class="col-sm-12 col-xl-6">
+                        <br/>
+                        <br/>
                         <br/>
                         <br/>
                         <div style="font-family: 'Helvetica Neue', Arial; font-size: 16px">
@@ -457,7 +460,9 @@
                 </div>
                 <div class="row g-4">
                     <div class="col-sm-12 col-xl-6">
-                        <h4 class="mb-4"><strong style="color:deeppink;">{{apt_dong}}</strong> <strong style="color:dodgerblue;">주택별 그래프</strong></h4>
+                        <br/>
+                        <br/>
+                        <h4 class="mb-4"><strong style="color:dodgerblue;">가구 현황 분석</strong></h4>
                         <div style="font-family: 'Helvetica Neue', Arial; font-size: 16px">
                         <h3>{{ chartTitle|safe }}</h3>
                         <div id="chart-2">{{ output5|safe }}</div>
@@ -467,11 +472,189 @@
                     <div class="col-sm-12 col-xl-6">
                         <br/>
                         <br/>
+                        <br/>
+                        <br/>
                         <div style="font-family: 'Helvetica Neue', Arial; font-size: 16px">
                         <h3>{{ chartTitle|safe }}</h3>
                         <div id="min-1">{{ output4|safe }}</div>
                         <br/>
                         </div>
+                    </div>
+                </div>
+                <div class="row g-4">
+                    <div class="col-sm-12 col-xl-6">
+                        <br/>
+                        <br/>
+                        <h4 class="mb-4"><strong style="color:dodgerblue;">운영/폐업 분석</strong></h4>
+                        <div style="font-family: 'Helvetica Neue', Arial; font-size: 16px">
+                        <h3>{{ chartTitle|safe }}</h3>
+                        <div id="choi-3">{{ safe1|safe }}</div>
+                        <br/>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-xl-6">
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <div style="font-family: 'Helvetica Neue', Arial; font-size: 16px">
+                        <h3>{{ chartTitle|safe }}</h3>
+                        <div id="choi-4">{{ close1|safe }}</div>
+                        <br/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-sm-12 col-xl-6">
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <h4 class="mb-4"><strong style="color:deeppink;">{{apt_dong}}</strong><strong style="color:dodgerblue;"> 평가 종합</strong></h4>
+                        <h5>분석영역의 상권등급은 총 5 등급 중  등급 입니다.</h5>
+                        <br/>
+                        <h2 class="mb-4"><strong style="color:black;">{{all_sum}}점</strong></h2>
+                        <h6><strong style="color:gray;">1등급에 가까울수록 상권이 활성화 되어있음을 의미</strong></h6>
+                        <h6><strong style="color:gray;">업종경기와 주변 집객시설, 교통, 여건을 고려한 결과</strong></h6>
+                        </br>
+                    </div>
+                    <div class="col-sm-12 col-xl-6">
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                    </div>
+                </div>
+                    <div class="col-12">
+                        <div class="bg-light rounded h-100 p-4">
+                        <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                              <tr>
+                                <th scope="col">접근성</th>
+                                <th scope="col">안정성</th>
+                                <th scope="col">영업력</th>
+                                <th scope="col">구매력</th>
+                                <th scope="col">집객력</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>{{sang1}}</td>
+                                <td>{{score_sum}}</td>
+                                <td>{{M_score3}}</td>
+                                <td>{{M_score5}}</td>
+                                <td>{{J_score5}}</td>
+                              </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                <div class="row g-4">
+                    <div class="col-sm-12">
+                        </br>
+                        <h4><strong style="color:red;">도움말</strong></h4>
+                        <h6>상권 내 음식, 소매, 서비스업의 전반적인 업종경기와 상권의 인구수, 교통시설, 집객시설 등을 종합하여 산출한 등급으로서,</h6>
+                        <h6>점수가 1등급에 가까울수록 상권이 활성화되어 있음을 의미(1~5등급)</h6>
+                        <h5><strong style="color:gray;">1등급 : 70점이상 - 2등급 : 57.5~70 - 3등급 : 45~57.5 - 4등급 : 32.5~45 - 5등급 : 32.5미만</strong></h5>
+                    </div>
+                </div>
+                <div class="row g-4">
+                    <div class="col-sm-12 col-xl-5">
+                        <br/>
+                        <br/>
+                        <div style="font-family: 'Helvetica Neue', Arial; font-size: 16px">
+                        <h3>{{ chartTitle|safe }}</h3>
+                        <div id="choi-5">{{ rader_1|safe }}</div>
+                        <br/>
+                        </div>
+                        <br/>
+                    </div>
+                    <div class="col-sm-12 col-xl-6">
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <h5>접근성 <strong style="color:green;"><font size="6">{{sang1}}</font></strong>점</h5>
+                        <p class="card-category">(20점)</p>
+                        </br>
+                        <p class="card-category"><strong><font size="3">상권별 점수</font></strong> : <strong style="color:orangered;"><font size="5">{{score}}</font></strong>점(10점) <font size="2">선택지역의 상권별 점수</font></p>
+                        <p class="card-category"><strong><font size="3">버스 이용자 수</font></strong> : <strong style="color:orangered;"><font size="5">{{transport}}</font></strong>점(5점) <font size="2">선택지역 내 하루평균 버스 이용자 수</font></p>
+                        <p class="card-category"><strong><font size="3">지하철 이용자 수</font></strong> : <strong style="color:orangered;"><font size="5">{{subway}}</font></strong>점(5점) <font size="2">선택지역 내 하루평균 지하철 이용자 수</font></p>
+                        <br/>
+                    </div>
+                </div>
+                <div class="row g-4">
+                    <div class="col-sm-12 col-xl-5">
+                        <br/>
+                        <br/>
+                        <div style="font-family: 'Helvetica Neue', Arial; font-size: 16px">
+                        <h3>{{ chartTitle|safe }}</h3>
+                        <div id="minn-2">{{ output7|safe }}</div>
+                        <br/>
+                        </div>
+                        <br/>
+                    </div>
+                    <div class="col-sm-12 col-xl-6">
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <h5>집객력 <strong style="color:green;"><font size="6">{{J_score5}}</font></strong>점</h5>
+                        <p class="card-category">(20점)</p>
+                        </br>
+                        <p class="card-category"><strong><font size="3">유동인구</font></strong> : <strong style="color:orangered;"><font size="5">{{J_score1}}</font></strong>점(10점) <font size="2">선택지역 내 면적당 유동인구 수</font></p>
+                        <p class="card-category"><strong><font size="3">배후 주거인구</font></strong> : <strong style="color:orangered;"><font size="5">{{J_score2}}</font></strong>점(5점) <font size="2">선택지역 내 면적당 주거인구 수</font></p>
+                        <p class="card-category"><strong><font size="3">배후 직장인구</font></strong> : <strong style="color:orangered;"><font size="5">{{J_score3}}</font></strong>점(5점) <font size="2">선택지역 내 면적당 직장인구 수</font></p>
+                        <br/>
+                    </div>
+                </div>
+                <div class="row g-4">
+                    <div class="col-sm-12 col-xl-5">
+                        <br/>
+                        <br/>
+                        <div style="font-family: 'Helvetica Neue', Arial; font-size: 16px">
+                        <h3>{{ chartTitle|safe }}</h3>
+                        <div id="minn-1">{{ output8|safe }}</div>
+                        <br/>
+                        </div>
+                        <br/>
+                    </div>
+                    <div class="col-sm-12 col-xl-6">
+                        <br/>
+                        <br/>
+                        <h5>구매력 <strong style="color:green;"><font size="6">{{M_score5}}</font></strong>점</h5>
+                        <p class="card-category">(20점)</p>
+                        </br>
+                        <p class="card-category"><strong><font size="3">상권매출규모</font></strong> : <strong style="color:orangered;"><font size="5">{{M_score1}}</font></strong>점(10점) <font size="2">선택지역 내 면적당 매출액</font></p>
+                        <p class="card-category"><strong><font size="3">직장인구 소비수준</font></strong> : <strong style="color:orangered;"><font size="5">{{M_score2}}</font></strong>점(5점) <font size="2">선택지역 직장인구 월 평균 소비규모</font></p>
+                        <p class="card-category"><strong><font size="3">주거인구 소비수준</font></strong> : <strong style="color:orangered;"><font size="5">{{M_score3}}</font></strong>점(5점) <font size="2">선택지역 주거인구 월 평균소비규모</font></p>
+                        <br/>
+                    </div>
+                </div>
+                <div class="row g-4">
+                    <div class="col-sm-12 col-xl-5">
+                        <br/>
+                        <br/>
+                        <div style="font-family: 'Helvetica Neue', Arial; font-size: 16px">
+                        <h3>{{ chartTitle|safe }}</h3>
+                        <div id="cchoi-1">{{ output9|safe }}</div>
+                        <br/>
+                        </div>
+                        <br/>
+                    </div>
+                    <div class="col-sm-12 col-xl-6">
+                        <br/>
+                        <br/>
+                        <h5>안정성 <strong style="color:green;"><font size="6">{{score_sum}}</font></strong>점</h5>
+                        <p class="card-category">(20점)</p>
+                        </br>
+                        <p class="card-category"><strong><font size="3">변동성</font></strong> : <strong style="color:orangered;"><font size="5">{{changed_grade}}</font></strong>점(10점) <font size="2">상권의 변동률</font></p>
+                        <p class="card-category"><strong><font size="3">운영연수</font></strong> : <strong style="color:orangered;"><font size="5">{{operation_grade}}</font></strong>점(5점) <font size="2">해당지역 점포 평균 운영연수</font></p>
+                        <p class="card-category"><strong><font size="3">휴/폐업률</font></strong> : <strong style="color:orangered;"><font size="5">{{closing_grade}}</font></strong>점(5점) <font size="2">휴/폐업 점포 비율</font></p>
+                        <br/>
                     </div>
                 </div>
             </div>
@@ -483,7 +666,7 @@
                 <div class="bg-light rounded-top p-4">
                     <div class="row">
                         <div class="col-12 col-sm-6 text-center text-sm-start">
-                            &copy; <a href="#">Your Site Name</a>, All Right Reserved. 
+                            &copy; <a href="#">집객력 : 유동인구는 {{J_score1}}, 배후주거인구는 {{J_score2}}, 배후 직장인구는 {{J_score3}}, 총합 : {{J_score5}}</a>구매력 : 상권매출규모는 {{M_score1}}, 직장인구 소비수준은 {{M_score2}}, 주거인구 소비수준은 {{M_score3}} 총합 : {{M_score5}}
                         </div>
                         <div class="col-12 col-sm-6 text-center text-sm-end">
                             <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
