@@ -147,18 +147,23 @@ class ChartAPIView(APIView):
         sang = sum_T_S(dong)
         safe = safe_op(dong)
         close = safe_cl(dong)
-
+        grademin = sum_grade(dong)
+        sungjangg = sungjang(dong)
+        sungjangj = sungjang_radar(dong)
+        a_radar = all_radar(dong)
+        a_angular = angulargauge_grade(dong)
 
         # park_grade = score_G(dong)
         return render(request, 'chart.html',
                       {'output': column3D.render(), 'output2': column2D.render(), 'output3': mscolumn2d.render(),
                        'apt_u': g_point['apt_u'], 'apt_grade': g_point['apt_grade'], 'apt_dong': g_point['apt_dong'],
-                       'score': g_point['score'], 'total_p': total_p,
+                       'score': g_point['score'], 'total_p': total_p, 'sum_grade': grademin, 'a_gu' : a_angular.render(),
                        'output4': sede.render(), 'output5': jutaek.render(), 'output6': choi.render(), 'output7' : minn2.render(), 'output8': minn1.render(), 'output9':cchoi.render(), 'all_sum':all_summ, 'rader_1':rader_choi.render(),
-                       'transport': transport_a, 'subway': subway_a, 'sang1': sang, 'safe1': safe.render(), 'close1':close.render(),
+                       'transport': transport_a, 'subway': subway_a, 'sang1': sang, 'safe1': safe.render(), 'close1':close.render(),'all_radar' : a_radar.render(),
                        'M_score1':gumaegu['M_score1'],'M_score2':gumaegu['M_score2'],'M_score3':gumaegu['M_score3'],'M_score5':gumaegu['M_score5'],
                        'J_score1':jipgaek1['J_score1'],'J_score2':jipgaek1['J_score2'],'J_score3':jipgaek1['J_score3'],'J_score5':jipgaek1['J_score5'],
-                       'changed_grade':choii['changed_grade'],'operation_grade':choii['operation_grade'],'closing_grade':choii['closing_grade'], 'score_sum':choii['score_sum']})  # render
+                       'changed_grade':choii['changed_grade'],'operation_grade':choii['operation_grade'],'closing_grade':choii['closing_grade'], 'score_sum':choii['score_sum'],
+                       'S_score1':sungjangg['S_score1'], 'S_score2':sungjangg['S_score2'], 'S_score3':sungjangg['S_score3'], 'S_score4':sungjangg['S_score4'], 'sungjang': sungjangj.render()})  # render
 
 
 ############################################################################################################
@@ -493,9 +498,9 @@ def jipgaek_radar(dong): #집객력 radar그래프
     else:
         J_score3 = 5
 
-    J_score1 = round(J_score1, 2)
-    J_score2 = round(J_score2, 2)
-    J_score3 = round(J_score3, 2)
+    J_score1 = round(round(J_score1, 2),1)
+    J_score2 = round(round(J_score2, 2),1)
+    J_score3 = round(round(J_score3, 2),1)
     J_score4 = J_score1 + J_score2 + J_score3
     J_score5 = round(J_score4, 2)
 
@@ -560,18 +565,18 @@ def gumae_radar(dong): #집객력 radar그래프
         M_score1 = 9.7
 
     if round(b[1]) < 1000:
-        M_score2 = round(round(b[1])) * 0.001
+        M_score2 = round(round(b[1]) //100) * 0.5
     else:
         M_score2 = 5
 
     if round(c[1]) < 500:
-        M_score3 = round(round(c[1])) * 0.01
+        M_score3 = round(round(c[1])//10) * 0.1
     else:
         M_score3 = 5
 
-    M_score1 = round(M_score1, 2)
-    M_score2 = round(M_score2, 2)
-    M_score3 = round(M_score3, 2)
+    M_score1 = round(round(M_score1, 2),1)
+    M_score2 = round(round(M_score2, 2),1)
+    M_score3 = round(round(M_score3, 2),1)
     M_score4 = M_score1 + M_score2 + M_score3
     M_score5 = round(M_score4, 2)
 
@@ -681,6 +686,82 @@ def Anjung_radar(dong): #안정성 radar그래프
     return C3D
 
 
+def sungjang_radar(dong): #집객력 radar그래프
+    # chartdata 선언
+    dataSource = OrderedDict()
+    dataSource["dataset"] = []
+    dataSource["categories"] = []
+    categories = OrderedDict()
+    categories["category"] = []
+    data = {}
+    data["data"] = []
+
+    categories["category"].append({"label": "창업률"})
+    categories["category"].append({"label": "변화지표"})
+    categories["category"].append({"label": "공급대비 수요"})
+
+    query = f"select H_CD, Change_st from change_e where H_CD = '{dong}';"
+    query2 = f"select dong, worker_avg from changup where dong = '{dong}';"
+    query3 = f"select a.dong, round(b.L_PPL/a.dep_sum) from changup a, S_population2 b where a.dong=b.H_NM and a.dong = '{dong}';"
+    cursor = MySqlConn.makeCursor()
+    cursor.execute(query)
+    a = cursor.fetchone()
+    cursor.execute(query2)
+    b = cursor.fetchone()
+    cursor.execute(query3)
+    c = cursor.fetchone()
+
+    if a[1] == 'LL':
+        S_score1 = 5
+    elif a[1] == 'LH':
+        S_score1 = 3.8
+    elif a[1] == 'HL':
+        S_score1 = 2.5
+    else:
+        S_score1 = 1.3
+
+    if b[1] < 20:
+        S_score2 = round(b[1]) / 4
+    else:
+        S_score2 = 5
+
+    if c[1] < 20:
+        S_score3 = c[1] / 2
+    else:
+        S_score3 = 10
+
+    S_score4 = S_score1 + S_score2 + S_score3
+
+
+
+    data["data"].append({"value": S_score2})
+    data["data"].append({"value": S_score1})
+    data["data"].append({"value": S_score3})
+    dataSource["dataset"].append({"seriesname": "User Ratings", "data": data["data"]})
+    dataSource["categories"].append({"category":categories["category"]})
+
+    chartConfig = OrderedDict()
+    # chartConfig = {}
+    chartConfig["theme"] = "fusion"      # 테마
+    chartConfig["showlegend"] = "0"
+    chartConfig["showdivlinevalues"] = "0"
+    chartConfig["showlimits"] = "0"
+    chartConfig["showvalues"] = "1"
+    chartConfig["plotfillalpha"] = "40"
+    chartConfig["plottooltext"] = f"'{dong}'<b>$label</b> grade is rated as <b>$value</b>"
+
+
+    # 그래프 특징 설정
+    dataSource["chart"] = chartConfig
+
+    # print(dataSource["categories"])
+    # print(dataSource["dataset"])
+
+    C3D = FusionCharts("radar", "dx2", "400", "400", "minn-6", "json", dataSource)
+    # 그래프 생성
+    return C3D
+
+
 def sang_radar(dong): #rader 그래프 접근성
     # chartdata 선언
     dataSource = OrderedDict()
@@ -728,6 +809,109 @@ def sang_radar(dong): #rader 그래프 접근성
 
     C3D = FusionCharts("radar", "ex9", "400", "400", "choi-5", "json", dataSource)
     # 그래프 생성
+    return C3D
+
+
+def all_radar(dong): #all_ radar그래프
+    # chartdata 선언
+    dataSource = OrderedDict()
+    dataSource["dataset"] = []
+    dataSource["categories"] = []
+    categories = OrderedDict()
+    categories["category"] = []
+    data = {}
+    data["data"] = []
+
+    categories["category"].append({"label": "접근성"})
+    categories["category"].append({"label": "구매력"})
+    categories["category"].append({"label": "성장성"})
+    categories["category"].append({"label": "집객력"})
+    categories["category"].append({"label": "안정성"})
+
+
+    all_score1 = round(T_S.subway(dong) + T_S.transport(dong) + grade(dong)["score"],2)
+    all_score2 = round(gumae(dong)['M_score5'], 2)
+    all_score3 = round(sungjang(dong)['S_score4'], 2)
+    all_score4 = round(jipgaek(dong)['J_score5'], 2)
+    all_score5 = round(Anjung(dong)['score_sum'], 2)
+
+
+
+    data["data"].append({"value": all_score1})
+    data["data"].append({"value": all_score2})
+    data["data"].append({"value": all_score3})
+    data["data"].append({"value": all_score4})
+    data["data"].append({"value": all_score5})
+    dataSource["dataset"].append({"seriesname": "User Ratings", "data": data["data"]})
+    dataSource["categories"].append({"category":categories["category"]})
+
+    chartConfig = OrderedDict()
+    # chartConfig = {}
+    chartConfig["theme"] = "fusion"      # 테마
+    chartConfig["showlegend"] = "0"
+    chartConfig["showdivlinevalues"] = "0"
+    chartConfig["showlimits"] = "0"
+    chartConfig["showvalues"] = "1"
+    chartConfig["plotfillalpha"] = "40"
+    chartConfig["plottooltext"] = f"'{dong}'<b>$label</b> grade is rated as <b>$value</b>"
+
+
+    # 그래프 특징 설정
+    dataSource["chart"] = chartConfig
+
+    # print(dataSource["categories"])
+    # print(dataSource["dataset"])
+
+    C3D = FusionCharts("radar", "ex13", "400", "400", "park-12", "json", dataSource)
+    # 그래프 생성
+    return C3D
+
+
+def angulargauge_grade(dong): #all_ radar그래프
+    sum_grade = all_sum(dong)
+    if sum_grade >= 70:
+        a = 1
+    elif sum_grade >= 57.5:
+        a = 2
+    elif sum_grade >= 45:
+        a = 3
+    elif sum_grade >= 32.5:
+        a = 4
+    else:
+        a = 5
+    C3D = FusionCharts("angulargauge", "ex12", "400", "170", "park-15", "json",
+                                """{
+                                    "chart": {
+                                        "caption": "",
+                                        "lowerLimit": "1",
+                                        "upperLimit": "5",
+                                        "showValue": "1",
+                                        "numberSuffix": "등급",
+                                        "theme": "fusion",
+                                        "showToolTip": "0"
+                                    },
+                                    "colorRange": {
+                                        "color": [{
+                                            "minValue": "1",
+                                            "maxValue": "3",
+                                            "code": "#00cd2d"
+                                        }, {
+                                            "minValue": "3",
+                                            "maxValue": "4",
+                                            "code": "#FFC533"
+                                        }, {
+                                            "minValue": "4",
+                                            "maxValue": "5",
+                                            "code": "#F2726F"
+                                        }]
+                                    },
+                                    "dials": {
+                                        "dial": [{
+                                            "value": "%d"
+                                        }]
+                                    }
+                                }""" % a)
+
     return C3D
 
 
@@ -876,6 +1060,8 @@ def special(dong):  #아파트도 아니고 단독주택도 아닌 특수 상권
 
     if round(a[0]) >= 20000:
         score = (round(a[0]) // 1000) * 0.1 + 5
+    elif round(a[0]) >= 50000:
+        score = 10
     elif round(a[0]) >= 15000:
         score = (round(a[0]) // 500) * 0.1 + 1.5
     elif round(a[0]) >= 0:
@@ -910,6 +1096,8 @@ def Mix(dong):
 
     if round(a[0]) >= 15000 and b[2] >= 400:  # "보통 A급지"
         score = (round(a[0]) // 1000) * 0.1 + 5.5
+    elif round(a[0]) >= 45000:
+        score = 10
     elif round(a[0]) >= 8000 and b[2] >= 200:  # "보통 B급지"
         score = (round(a[0]) // 500) * 0.1 + 3.6
     elif round(a[0]) >= 0 and b[2] <= 200: # "불량 C급지"
@@ -944,6 +1132,8 @@ def hos(dong):
 
     if round(a[0]) >= 9000 and b[2] >= 400:  # "보통 A급지"
         score = (round(a[0]) // 1000) * 0.1 + 6.1
+    elif round(a[0]) >= 39000:
+        score = 10
     elif round(a[0]) >= 5000 and b[2] >= 200:  # "보통 B급지"
         score = (round(a[0]) // 500) * 0.1 + 3
     elif round(a[0]) >= 0 and b[2] <= 200:  # "불량 C급지"
@@ -974,6 +1164,8 @@ def apt(dong) -> dict:
 
     if round(a[0]) >= 15000:
         score = (round(a[0]) // 1000) * 0.1 + 5.5
+    elif round(a[0]) >= 45000:
+        score = 10
     elif round(a[0]) >= 8000:
         score = (round(a[0]) // 500) * 0.1 + 3.6
     elif round(a[0]) >= 0:
@@ -1004,6 +1196,8 @@ def sol_house(dong):
 
     if round(a[0]) >= 15000:
         score = (round(a[0]) // 1000) * 0.1 + 5.5
+    elif round(a[0]) >= 45000:
+        score = 10
     elif round(a[0]) >= 8000:
         score = (round(a[0]) // 500) * 0.1 + 3.6
     elif round(a[0]) >= 0:
@@ -1070,23 +1264,23 @@ def gumae(dong): #구매력 점수
 
 
     if round(a[1]) < 97000 :
-        M_score1 = round(round(a[1]))*0.0001
+        M_score1 = round(round(a[1])//1000)*0.1
     else:
         M_score1 = 9.7
 
     if round(b[1]) < 1000 :
-        M_score2 = round(round(b[1]))*0.001
+        M_score2 = round(round(b[1]) // 100)*0.5
     else:
         M_score2 = 5
 
     if round(c[1]) < 500 :
-        M_score3 = round(round(c[1]))*0.01
+        M_score3 = round(round(c[1])//10)*0.1
     else:
         M_score3 = 5
 
-    M_score1 = round(M_score1,2)
-    M_score2 = round(M_score2, 2)
-    M_score3 = round(M_score3, 2)
+    M_score1 = round(round(M_score1,2),1)
+    M_score2 = round(round(M_score2, 2),1)
+    M_score3 = round(round(M_score3, 2),1)
     M_score4 = M_score1 + M_score2 + M_score3
     M_score5 = round(M_score4, 2)
 
@@ -1136,6 +1330,46 @@ def Anjung(dong): #안정성 점수
     return choi
 
 
+def sungjang(dong):
+    query = f"select H_CD, Change_st from change_e where H_CD = '{dong}';"
+    query2 = f"select dong, worker_avg from changup where dong = '{dong}';"
+    query3 = f"select a.dong, round(b.L_PPL/a.dep_sum) from changup a, S_population2 b where a.dong=b.H_NM and a.dong = '{dong}';"
+    cursor = MySqlConn.makeCursor()
+    cursor.execute(query)
+    a = cursor.fetchone()
+    cursor.execute(query2)
+    b = cursor.fetchone()
+    cursor.execute(query3)
+    c = cursor.fetchone()
+
+
+    if a[1] == 'LL':
+        S_score1 = 5
+    elif a[1] == 'LH':
+        S_score1 = 3.8
+    elif a[1] == 'HL':
+        S_score1 = 2.5
+    else:
+        S_score1 = 1.3
+
+
+    if b[1] < 20 :
+        S_score2 = round(b[1])/4
+    else :
+        S_score2 = 5
+
+
+    if c[1] < 20 :
+        S_score3 = c[1]/2
+    else :
+        S_score3 = 10
+
+    S_score4 = S_score1 + S_score2 + S_score3
+
+    msj = {'S_score1':S_score1, 'S_score2':S_score2, 'S_score3':S_score3, 'S_score4':S_score4}
+
+    return msj
+
 class T_S: #접근성 점수
 
 
@@ -1147,6 +1381,8 @@ class T_S: #접근성 점수
         a = cursor.fetchone()
 
         score2 = (round(a[0]) // 3000) * 0.1
+        if (round(a[0]) // 3000) * 0.1 >= 5:
+            score2 = 5
         score3 = round(score2, 2)
 
         return score3
@@ -1172,8 +1408,26 @@ def abc(request):
 
 def all_sum(dong):
 
-    all_summ = round(gumae(dong)['M_score5'] + jipgaek(dong)['J_score5'] + Anjung(dong)['score_sum'] + T_S.subway(dong) + T_S.transport(dong) + grade(dong)["score"],2)
+    all_summ = round(gumae(dong)['M_score5'] + jipgaek(dong)['J_score5'] + Anjung(dong)['score_sum'] + T_S.subway(dong) + T_S.transport(dong) + grade(dong)["score"] + sungjang(dong)['S_score4'],2)
     return all_summ
+
+
+def sum_grade(dong):
+    grade_sum = round(gumae(dong)['M_score5'] + jipgaek(dong)['J_score5'] + Anjung(dong)['score_sum'] + T_S.subway(dong) + T_S.transport(dong) + grade(dong)["score"] + sungjang(dong)['S_score4'],2)
+    if grade_sum >= 70:
+        grade_score = "1"
+    elif 57.5 <= grade_sum < 70:
+        grade_score = "2"
+    elif 45 <= grade_sum < 57.5:
+        grade_score = "3"
+    elif 32.5 <= grade_sum < 45:
+        grade_score = "4"
+    else:
+        grade_score = "5"
+
+    return grade_score
+
+
 
 def sum_T_S(dong):
     T_S_score = round(T_S.subway(dong) + T_S.transport(dong) + grade(dong)["score"], 2)

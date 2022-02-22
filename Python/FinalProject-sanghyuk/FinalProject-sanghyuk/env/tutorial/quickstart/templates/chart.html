@@ -512,19 +512,23 @@
                         <br/>
                         <br/>
                         <h4 class="mb-4"><strong style="color:deeppink;">{{apt_dong}}</strong><strong style="color:dodgerblue;"> 평가 종합</strong></h4>
-                        <h5>분석영역의 상권등급은 총 5 등급 중  등급 입니다.</h5>
+                        <h5>분석영역의 상권등급은 총 5 등급 중  <font size="5"><strong style="color:red;">{{sum_grade}}</strong></font>등급 입니다.</h5>
                         <br/>
-                        <h2 class="mb-4"><strong style="color:black;">{{all_sum}}점</strong></h2>
+                        <h1 class="mb-4"><strong style="color:black;">{{all_sum}}점</strong></h1>
                         <h6><strong style="color:gray;">1등급에 가까울수록 상권이 활성화 되어있음을 의미</strong></h6>
                         <h6><strong style="color:gray;">업종경기와 주변 집객시설, 교통, 여건을 고려한 결과</strong></h6>
+                        <div id="park-15">{{a_gu|safe}}</div>
                         </br>
                     </div>
                     <div class="col-sm-12 col-xl-6">
+                        <div class="col-sm-12 col-xl-5">
                         <br/>
                         <br/>
+                        <div style="font-family: 'Helvetica Neue', Arial; font-size: 16px">
+                        <h3>{{ chartTitle|safe }}</h3>
+                        <div id="park-12">{{ all_radar|safe }}</div>
                         <br/>
-                        <br/>
-                        <br/>
+                        </div>
                         <br/>
                     </div>
                 </div>
@@ -535,19 +539,19 @@
                             <thead>
                               <tr>
                                 <th scope="col">접근성</th>
-                                <th scope="col">안정성</th>
-                                <th scope="col">영업력</th>
-                                <th scope="col">구매력</th>
                                 <th scope="col">집객력</th>
+                                <th scope="col">구매력</th>
+                                <th scope="col">안정성</th>
+                                <th scope="col">성장성</th>
                               </tr>
                             </thead>
                             <tbody>
                               <tr>
                                 <td>{{sang1}}</td>
-                                <td>{{score_sum}}</td>
-                                <td>{{M_score3}}</td>
-                                <td>{{M_score5}}</td>
                                 <td>{{J_score5}}</td>
+                                <td>{{M_score5}}</td>
+                                <td>{{score_sum}}</td>
+                                <td>{{S_score4}}</td>
                               </tr>
                             </tbody>
                         </table>
@@ -630,7 +634,7 @@
                         </br>
                         <p class="card-category"><strong><font size="3">상권매출규모</font></strong> : <strong style="color:orangered;"><font size="5">{{M_score1}}</font></strong>점(10점) <font size="2">선택지역 내 면적당 매출액</font></p>
                         <p class="card-category"><strong><font size="3">직장인구 소비수준</font></strong> : <strong style="color:orangered;"><font size="5">{{M_score2}}</font></strong>점(5점) <font size="2">선택지역 직장인구 월 평균 소비규모</font></p>
-                        <p class="card-category"><strong><font size="3">주거인구 소비수준</font></strong> : <strong style="color:orangered;"><font size="5">{{M_score3}}</font></strong>점(5점) <font size="2">선택지역 주거인구 월 평균소비규모</font></p>
+                        <p class="card-category"><strong><font size="3">주거인구 소비수준</font></strong> : <strong style="color:orangered;"><font size="5">{{M_score3}}</font></strong>점(5점) <font size="2">선택지역 주거인구 월 평균 소비규모</font></p>
                         <br/>
                     </div>
                 </div>
@@ -657,6 +661,29 @@
                         <br/>
                     </div>
                 </div>
+                <div class="row g-4">
+                    <div class="col-sm-12 col-xl-5">
+                        <br/>
+                        <br/>
+                        <div style="font-family: 'Helvetica Neue', Arial; font-size: 16px">
+                        <h3>{{ chartTitle|safe }}</h3>
+                        <div id="minn-6">{{ sungjang|safe }}</div>
+                        <br/>
+                        </div>
+                        <br/>
+                    </div>
+                    <div class="col-sm-12 col-xl-6">
+                        <br/>
+                        <br/>
+                        <h5>성장성 <strong style="color:green;"><font size="6">{{S_score4}}</font></strong>점</h5>
+                        <p class="card-category">(20점)</p>
+                        </br>
+                        <p class="card-category"><strong><font size="3">공급대비 수요</font></strong> : <strong style="color:orangered;"><font size="5">{{S_score3}}</font></strong>점(10점) <font size="2">사업체 수 대비 생활인구 비율</font></p>
+                        <p class="card-category"><strong><font size="3">창업률</font></strong> : <strong style="color:orangered;"><font size="5">{{S_score1}}</font></strong>점(5점) <font size="2">선택지역 사업체 창업률</font></p>
+                        <p class="card-category"><strong><font size="3">변화지표</font></strong> : <strong style="color:orangered;"><font size="5">{{S_score2}}</font></strong>점(5점) <font size="2">선택지역 전년대비 변화도</font></p>
+                        <br/>
+                    </div>
+                </div>
             </div>
             <!-- Chart End -->
 
@@ -666,7 +693,7 @@
                 <div class="bg-light rounded-top p-4">
                     <div class="row">
                         <div class="col-12 col-sm-6 text-center text-sm-start">
-                            &copy; <a href="#">집객력 : 유동인구는 {{J_score1}}, 배후주거인구는 {{J_score2}}, 배후 직장인구는 {{J_score3}}, 총합 : {{J_score5}}</a>구매력 : 상권매출규모는 {{M_score1}}, 직장인구 소비수준은 {{M_score2}}, 주거인구 소비수준은 {{M_score3}} 총합 : {{M_score5}}
+                            &copy; <a href="#">{{S_score1}},{{S_score2}},{{S_score3}}, 집객력 : 유동인구는 {{J_score1}}, 배후주거인구는 {{J_score2}}, 배후 직장인구는 {{J_score3}}, 총합 : {{J_score5}}</a>구매력 : 상권매출규모는 {{M_score1}}, 직장인구 소비수준은 {{M_score2}}, 주거인구 소비수준은 {{M_score3}} 총합 : {{M_score5}}
                         </div>
                         <div class="col-12 col-sm-6 text-center text-sm-end">
                             <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
