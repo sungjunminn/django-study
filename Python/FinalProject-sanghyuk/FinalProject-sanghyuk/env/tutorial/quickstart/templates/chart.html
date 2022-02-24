@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>DASHMIN - Bootstrap Admin Template</title>
+    <title>행정동별 상권분석</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -340,79 +340,7 @@
                     <input class="form-control border-0" type="search" placeholder="Search">
                 </form>
                 <div class="navbar-nav align-items-center ms-auto">
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <i class="fa fa-envelope me-lg-2"></i>
-                            <span class="d-none d-lg-inline-flex">{{gumae}}</span>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                            <a href="#" class="dropdown-item">
-                                <div class="d-flex align-items-center">
-                                    <img class="rounded-circle" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
-                                    <div class="ms-2">
-                                        <h6 class="fw-normal mb-0">Jhon send you a message</h6>
-                                        <small>15 minutes ago</small>
-                                    </div>
-                                </div>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item">
-                                <div class="d-flex align-items-center">
-                                    <img class="rounded-circle" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
-                                    <div class="ms-2">
-                                        <h6 class="fw-normal mb-0">Jhon send you a message</h6>
-                                        <small>15 minutes ago</small>
-                                    </div>
-                                </div>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item">
-                                <div class="d-flex align-items-center">
-                                    <img class="rounded-circle" src="static/assets/img/Doraemon.jpg" alt="" style="width: 40px; height: 40px;">
-                                    <div class="ms-2">
-                                        <h6 class="fw-normal mb-0">Jhon send you a message</h6>
-                                        <small>15 minutes ago</small>
-                                    </div>
-                                </div>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item text-center">See all message</a>
-                        </div>
-                    </div>
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <i class="fa fa-bell me-lg-2"></i>
-                            <span class="d-none d-lg-inline-flex">Notificatin</span>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                            <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">Profile updated</h6>
-                                <small>15 minutes ago</small>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">New user added</h6>
-                                <small>15 minutes ago</small>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">Password changed</h6>
-                                <small>15 minutes ago</small>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item text-center">See all notifications</a>
-                        </div>
-                    </div>
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <span class="d-none d-lg-inline-flex">dfsdfad</span>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                            <a href="#" class="dropdown-item">My Profile</a>
-                            <a href="#" class="dropdown-item">Settings</a>
-                            <a href="#" class="dropdown-item">Log Out</a>
-                        </div>
-                    </div>
+
                 </div>
             </nav>
             <!-- Navbar End -->
@@ -504,7 +432,44 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-12">
+                    <div class="bg-light rounded h-100 p-4">
+                        <h4 class="mb-4"><strong style="color:dodgerblue;">학교</strong></h4>
+                    <div class="table-responsive">
+                    <table class="table">
+                    <thead>
+                    <tr>
+                    <th scope="col">초등학교</th>
+                    <th scope="col">중학교</th>
+                    <th scope="col">고등학교</th>
+                    <th scope="col">대학교</th>
+                    <th scope="col">외국인학교</th>
+                    <th scope="col">특수학교</th>
+                    <th scope="col">총합</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                    <td>{{elementary_school}}</td>
+                    <td>{{middle_school}}</td>
+                    <td>{{high_school}}</td>
+                    <td>{{university}}</td>
+                    <td>{{international_school}}</td>
+                    <td>{{special_school}}</td>
+                    <td>{{sum}}</td>
 
+                    </tr>
+                    </tbody>
+                    </table>
+                    </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                <div class="bg-light rounded h-100 p-4">
+                    <h5>분석결과 <strong style="color:red;">{{apt_dong}}</strong> 은 <strong style="color:red;">{{apt_u}}</strong> 이고 <strong style="color:red;">{{apt_grade}}</strong> 이며
+                  하루 평균 상주인구는 <strong style="color:red;">{{total_p}}</strong> 명 입니다.</h5>
+                </div>
+                </div>
                 <div class="row g-4">
                     <div class="col-sm-12 col-xl-6">
                         <br/>
@@ -629,6 +594,8 @@
                     <div class="col-sm-12 col-xl-6">
                         <br/>
                         <br/>
+                        <br/>
+                        <br/>
                         <h5>구매력 <strong style="color:green;"><font size="6">{{M_score5}}</font></strong>점</h5>
                         <p class="card-category">(20점)</p>
                         </br>
@@ -650,6 +617,8 @@
                         <br/>
                     </div>
                     <div class="col-sm-12 col-xl-6">
+                        <br/>
+                        <br/>
                         <br/>
                         <br/>
                         <h5>안정성 <strong style="color:green;"><font size="6">{{score_sum}}</font></strong>점</h5>
@@ -675,6 +644,8 @@
                     <div class="col-sm-12 col-xl-6">
                         <br/>
                         <br/>
+                        <br/>
+                        <br/>
                         <h5>성장성 <strong style="color:green;"><font size="6">{{S_score4}}</font></strong>점</h5>
                         <p class="card-category">(20점)</p>
                         </br>
@@ -693,7 +664,7 @@
                 <div class="bg-light rounded-top p-4">
                     <div class="row">
                         <div class="col-12 col-sm-6 text-center text-sm-start">
-                            &copy; <a href="#">{{S_score1}},{{S_score2}},{{S_score3}}, 집객력 : 유동인구는 {{J_score1}}, 배후주거인구는 {{J_score2}}, 배후 직장인구는 {{J_score3}}, 총합 : {{J_score5}}</a>구매력 : 상권매출규모는 {{M_score1}}, 직장인구 소비수준은 {{M_score2}}, 주거인구 소비수준은 {{M_score3}} 총합 : {{M_score5}}
+                            &copy; <a href="#"></a>구매력 : 상권매출규모는 {{M_score1}}, 직장인구 소비수준은 {{M_score2}}, 주거인구 소비수준은 {{M_score3}} 총합 : {{M_score5}}
                         </div>
                         <div class="col-12 col-sm-6 text-center text-sm-end">
                             <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
