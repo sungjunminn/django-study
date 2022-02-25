@@ -153,6 +153,9 @@ class ChartAPIView(APIView):
         a_radar = all_radar(dong)
         a_angular = angulargauge_grade(dong)
         school = School(dong)
+        chu = chuchun(dong)
+        b_score = bus_b(dong)
+        s_score = subway_b(dong)
 
         # park_grade = score_G(dong)
         return render(request, 'chart.html',
@@ -161,11 +164,12 @@ class ChartAPIView(APIView):
                        'score': g_point['score'], 'total_p': total_p, 'sum_grade': grademin, 'a_gu' : a_angular.render(),
                        'output4': sede.render(), 'output5': jutaek.render(), 'output6': choi.render(), 'output7' : minn2.render(), 'output8': minn1.render(), 'output9':cchoi.render(), 'all_sum':all_summ, 'rader_1':rader_choi.render(),
                        'transport': transport_a, 'subway': subway_a, 'sang1': sang, 'safe1': safe.render(), 'close1':close.render(),'all_radar' : a_radar.render(),
-                       'M_score1':gumaegu['M_score1'],'M_score2':gumaegu['M_score2'],'M_score3':gumaegu['M_score3'],'M_score5':gumaegu['M_score5'],
-                       'J_score1':jipgaek1['J_score1'],'J_score2':jipgaek1['J_score2'],'J_score3':jipgaek1['J_score3'],'J_score5':jipgaek1['J_score5'],
-                       'changed_grade':choii['changed_grade'],'operation_grade':choii['operation_grade'],'closing_grade':choii['closing_grade'], 'score_sum':choii['score_sum'],
-                       'S_score1':sungjangg['S_score1'], 'S_score2':sungjangg['S_score2'], 'S_score3':sungjangg['S_score3'], 'S_score4':sungjangg['S_score4'], 'sungjang': sungjangj.render(),
-                       'elementary_school':school['a'],'middle_school':school['b'],'high_school':school['c'],'university':school['d'],'international_school':school['e'],'special_school':school['f'],'sum':school['g']})  # render
+                       'M_score1':gumaegu['M_score1'],'M_score2':gumaegu['M_score2'],'M_score3':gumaegu['M_score3'],'M_score5':gumaegu['M_score5'],'gumae_a':gumaegu['gumae_a'],'gumae_b':gumaegu['gumae_b'],'gumae_c':gumaegu['gumae_c'],
+                       'J_score1':jipgaek1['J_score1'],'J_score2':jipgaek1['J_score2'],'J_score3':jipgaek1['J_score3'],'J_score5':jipgaek1['J_score5'], 'L_PPL':jipgaek1['L_PPL'], 'area':jipgaek1['area'], 'jugu':jipgaek1['jugu'],'jikjang':jipgaek1['jikjang'],
+                       'changed_grade':choii['changed_grade'],'operation_grade':choii['operation_grade'],'closing_grade':choii['closing_grade'], 'score_sum':choii['score_sum'],'change' :choii['change'] ,'operation' :choii['operation'],'closing' :choii['closing'],
+                       'S_score1':sungjangg['S_score1'], 'S_score2':sungjangg['S_score2'], 'S_score3':sungjangg['S_score3'], 'S_score4':sungjangg['S_score4'], 'sungjang': sungjangj.render(), 'kongsu':sungjangg['kongsu'],'changes':sungjangg['changes'],'changup':sungjangg['changup'],
+                       'elementary_school':school['a'],'middle_school':school['b'],'high_school':school['c'],'university':school['d'],'international_school':school['e'],'special_school':school['f'],'sum':school['g'],
+                       'c_list':chu, 'bus_score': b_score, 'subway_score': s_score})  # render
 
 
 ############################################################################################################
@@ -967,8 +971,8 @@ def safe_cl(dong):  #안정성 근거(폐업률)
     data["data1"] = []
     data["data2"] = []
 
-    query1 = f"select closing_21_1 , seoul_closing_21_1,closing_21_2,seoul_closing_21_2,closing_21_3," \
-             f"seoul_closing_21_3,closing_20_4,seoul_closing_20_4 from dong_operation where dong = '{dong}';"
+    query1 = f"select open_21_1 , close_21_1,open_21_2,close_21_2,open_21_3," \
+             f"close_21_3,open_20_4,close_20_4 from openclose where dong = '{dong}';"
     cursor = MySqlConn.makeCursor()
     cursor.execute(query1)
     a = cursor.fetchone()
@@ -983,11 +987,11 @@ def safe_cl(dong):  #안정성 근거(폐업률)
     data["data2"].append({"value": a[5]})
     data["data2"].append({"value": a[7]})
 
-    dataSource["dataset"].append({"seriesname": f"{dong} 평균 폐업 가게 수", "data": data["data1"]})
-    dataSource["dataset"].append({"seriesname": "서울 평균 폐업 수", "data": data["data2"]})
+    dataSource["dataset"].append({"seriesname": f"{dong} 오픈 가게 수", "data": data["data1"]})
+    dataSource["dataset"].append({"seriesname": f"{dong} 폐업 가게 수", "data": data["data2"]})
 
     chartConfig = OrderedDict()
-    chartConfig["caption"] = "폐업 가게 수"
+    chartConfig["caption"] = "오픈/폐업 가게 수"
     # chartConfig["xAxisName"] = "x축이름"
     chartConfig["yAxisName"] = "점포 수"
     chartConfig["numberSuffix"] = "개"  # y축 숫자단위
@@ -1020,7 +1024,6 @@ def grade(dong) -> dict:
             f" ((dep_house / sum) * 100) + ((non_live / sum) * 100)from seoul_house_dong where dong = '{dong}';"
     query2 = f"select dong, hospital, bed from hospital where dong ='{dong}';"
 
-    query3 = f"select k_food, car_trans, budongsan, clothing, drinks, hair, market, bunsik, cafe_a, washin, karaoke, convenience, chicken, car_repair, fruit, meat, c_food, billiard, bread, pcbang from dep_rec where dong ='{dong}';"
     cursor = MySqlConn.makeCursor()
     cursor.execute(query)
     a = cursor.fetchone()
@@ -1028,36 +1031,20 @@ def grade(dong) -> dict:
     cursor.execute(query2)
     b = cursor.fetchone()
 
-    cursor.execute(query3)
-    c = list(cursor.fetchone())
 
-    chu_list = []
-    c_list = ["한식음식점", "자동차", "부동산", "의류소매", "주점"]
     # g_point = None
     if b[1] > 0:
         if round(a[1]) >= 70:
             g_point = Mix(dong)
-            c_point = [120, 90, 50, 60, 50]
-
         else:
             g_point = hos(dong)
-            c_point = [120, 90, 50, 60, 50]
     else:
         if round(a[1]) >= 70:
             g_point = apt(dong)
-            c_point = [120, 90, 50, 60, 50]
         elif round(a[2]) >= 70:
             g_point = sol_house(dong)
-            c_point = [120, 90, 50, 60, 50]
         else:
             g_point = special(dong)
-            c_point = [120, 90, 50, 60, 50]
-
-    #c링 c_point랑 비교
-    for aa, ab, ac in zip(c_list, c_point, c):
-        if ab>ac :
-            chu_list.append(aa)
-
 
     return g_point
 
@@ -1100,7 +1087,6 @@ def special(dong):  #아파트도 아니고 단독주택도 아닌 특수 상권
         score = 10
 
     sang_score = round(score, 2)
-
     psh = {'apt_u': apt_u, 'apt_grade': apt_grade, 'apt_dong': apt_dong, 'score': sang_score}
     return psh
 
@@ -1139,12 +1125,11 @@ def Mix(dong):
         score = 10
 
     sang_score = round(score, 2)
-
     psh = {'apt_u': apt_u, 'apt_grade': apt_grade, 'apt_dong':apt_dong, 'score': sang_score}
     return psh
 
 
-def hos(dong):
+def hos(dong) -> dict:
     apt_u = '병원가 상권'
     query = f"select sum(TOTAL_P)/744 from  s_population a, H_CODE b where '{dong}' = b.H_DNG_NM and a.H_CD =b.H_DNG_CD;"
     query2 = f"select dong, hospital, bed from hospital where dong ='{dong}';"
@@ -1175,7 +1160,6 @@ def hos(dong):
         score = 10
 
     sang_score = round(score, 2)
-
     psh = {'apt_u': apt_u, 'apt_grade': apt_grade, 'apt_dong':apt_dong, 'score': sang_score}
     return psh
 
@@ -1207,7 +1191,6 @@ def apt(dong) -> dict:
         score = 10
 
     sang_score = round(score, 2)
-
     psh = {'apt_u': apt_u, 'apt_grade': apt_grade, 'apt_dong': apt_dong, 'score': sang_score}
     return psh
 
@@ -1239,15 +1222,14 @@ def sol_house(dong):
         score = 10
 
     sang_score = round(score, 2)
-
     psh = {'apt_u': apt_u, 'apt_grade':apt_grade, 'score': sang_score}
     return psh
 
 
 def jipgaek(dong): #집객력 점수
-    query = f"select a.H_CD2, a.H_NM, a.L_PPL/b.area from S_population2 a, ppt_density b where a.H_NM = b.dong and b.dong = '{dong}';"
-    query2 = f"select a.dong, a.all_sum/b.area from seoul_ppl_dong a, ppt_density b where a.dong = b.dong and b.dong = '{dong}';"
-    query3 = f"select a.dong, a.sum/b.area from dong_job_ppt a, ppt_density b where a.dong = b.dong and b.dong = '{dong}';"
+    query = f"select a.H_CD2, a.H_NM, a.L_PPL/b.area, a.L_PPL, b.area from S_population2 a, ppt_density b where a.H_NM = b.dong and b.dong = '{dong}';"
+    query2 = f"select a.dong, a.all_sum/b.area, a.all_sum from seoul_ppl_dong a, ppt_density b where a.dong = b.dong and b.dong = '{dong}';"
+    query3 = f"select a.dong, a.sum/b.area, a.sum from dong_job_ppt a, ppt_density b where a.dong = b.dong and b.dong = '{dong}';"
     cursor = MySqlConn.makeCursor()
     cursor.execute(query)
     a = cursor.fetchone()
@@ -1277,9 +1259,12 @@ def jipgaek(dong): #집객력 점수
     J_score3 = round(J_score3, 2)
     J_score4 = J_score1+ J_score2+ J_score3
     J_score5 = round(J_score4, 2)
+    L_PPL = round(a[3])
+    area = a[4]
+    jugu = b[2]
+    jikjang = c[2]
 
-
-    msj = {'J_score1':J_score1,'J_score2':J_score2,'J_score3':J_score3, 'J_score5':J_score5}
+    msj = {'J_score1':J_score1,'J_score2':J_score2,'J_score3':J_score3, 'J_score5':J_score5, 'L_PPL':L_PPL, 'area':area, 'jugu': jugu, 'jikjang':jikjang}
     return msj
 
 
@@ -1316,8 +1301,12 @@ def gumae(dong): #구매력 점수
     M_score3 = round(round(M_score3, 2),1)
     M_score4 = M_score1 + M_score2 + M_score3
     M_score5 = round(M_score4, 2)
+    gumae_a = round(a[1])
+    gumae_b = round(b[1])
+    gumae_c = round(c[1])
 
-    msj2 = {'M_score1': M_score1, 'M_score2': M_score2, 'M_score3': M_score3, 'M_score5': M_score5}
+    msj2 = {'M_score1': M_score1, 'M_score2': M_score2, 'M_score3': M_score3, 'M_score5': M_score5, 'gumae_a': gumae_a,
+            'gumae_b': gumae_b, 'gumae_c': gumae_c}
 
     return msj2
 
@@ -1327,15 +1316,19 @@ def Anjung(dong): #안정성 점수
     cursor = MySqlConn.makeCursor()
     cursor.execute(query)
     a = cursor.fetchone()
-
+    b = []
     if a[0] == 'LH':
+        b.append('상권 확장')
         changed_grade = 10
     elif a[0] == 'LL':
+        b.append('상권 확장 변화')
         changed_grade = 7.5
     elif a[0] == 'HH':
+        b.append('상권 정체')
         changed_grade = 5
     else:
         changed_grade = 2.5
+        b.append('상권 축소')
     if a[1] >= 144:
         operation_grade = 5
     elif 123 <= a[1] < 144:
@@ -1358,15 +1351,15 @@ def Anjung(dong): #안정성 점수
         closing_grade = 1
 
     score_sum = changed_grade + operation_grade + closing_grade
-    choi = {'changed_grade':changed_grade, 'operation_grade':operation_grade,'closing_grade':closing_grade, 'score_sum': score_sum}
+    choi = {'change' :b[0],'operation':a[1],'closing':a[2],'changed_grade':changed_grade, 'operation_grade':operation_grade,'closing_grade':closing_grade, 'score_sum': score_sum}
 
     return choi
 
 
 def sungjang(dong):
-    query = f"select H_CD, Change_st from change_e where H_CD = '{dong}';"
-    query2 = f"select dong, worker_avg from changup where dong = '{dong}';"
-    query3 = f"select a.dong, round(b.L_PPL/a.dep_sum) from changup a, S_population2 b where a.dong=b.H_NM and a.dong = '{dong}';"
+    query = f"select a.dong, round(b.L_PPL/a.dep_sum), a.dep_sum from changup a, S_population2 b where a.dong=b.H_NM and a.dong = '{dong}';"
+    query2 = f"select dong, changup_per from changup where dong = '{dong}';"
+    query3 = f"select H_CD, Change_st, Change_N from change_e where H_CD = '{dong}';"
     cursor = MySqlConn.makeCursor()
     cursor.execute(query)
     a = cursor.fetchone()
@@ -1376,11 +1369,11 @@ def sungjang(dong):
     c = cursor.fetchone()
 
 
-    if a[1] == 'LL':
+    if c[1] == 'LL':
         S_score1 = 5
-    elif a[1] == 'LH':
+    elif c[1] == 'LH':
         S_score1 = 3.8
-    elif a[1] == 'HL':
+    elif c[1] == 'HL':
         S_score1 = 2.5
     else:
         S_score1 = 1.3
@@ -1392,16 +1385,21 @@ def sungjang(dong):
         S_score2 = 5
 
 
-    if c[1] < 20 :
-        S_score3 = round(c[1]/2)
+    if a[1] < 20 :
+        S_score3 = round(a[1]/4)
     else :
         S_score3 = 10
 
     S_score4 = S_score1 + S_score2 + S_score3
+    kongsu = a[2]
+    changup = b[1]
+    changes = c[2]
 
-    msj = {'S_score1':S_score1, 'S_score2':S_score2, 'S_score3':S_score3, 'S_score4':S_score4}
+
+    msj = {'S_score1':S_score1, 'S_score2':S_score2, 'S_score3':S_score3, 'S_score4':S_score4, 'kongsu':kongsu,'changup':changup, 'changes':changes}
 
     return msj
+
 
 class T_S: #접근성 점수
 
@@ -1436,6 +1434,27 @@ class T_S: #접근성 점수
         return score4
 
 
+def bus_b(dong):  # 접근성 버스 점수 (0~5점)
+    query = f"select (sum(P_C))/31 from transport a , H_CODE b where a.H_SDNG_CD = b.H_SDNG_CD and b.H_DNG_NM ='{dong}';"
+    cursor = MySqlConn.makeCursor()
+    cursor.execute(query)
+    a = cursor.fetchone()
+
+    bus_score = round(a[0])
+
+    return bus_score
+
+
+def subway_b(dong):  # 접근성 지하철 점수 (0~5점)
+    query = f"select (sum(S_P_C))/31 from Subway a , H_CODE b where a.H_SDG_CD = b.H_SDNG_CD and b.H_DNG_NM ='{dong}';"
+    cursor = MySqlConn.makeCursor()
+    cursor.execute(query)
+    a = cursor.fetchone()
+
+    subway_score = round(a[0])
+    return subway_score
+
+
 def abc(request):
     return render(request, 'table.html')
 
@@ -1461,243 +1480,236 @@ def sum_grade(dong):
     return grade_score
 
 
-
 def sum_T_S(dong):
     T_S_score = round(T_S.subway(dong) + T_S.transport(dong) + grade(dong)["score"], 2)
 
     return T_S_score
 
 
-# def chuchun(dong):
-#     query = f"select dong, ((apartment / sum) * 100) + ((multi_sede / sum) * 100), ((sol_house / sum) * 100) + ((multi_gagu / sum) * 100) + ((etc_house / sum) * 100)," \
-#             f" ((dep_house / sum) * 100) + ((non_live / sum) * 100)from seoul_house_dong where dong = '{dong}';"
-#     query2 = f"select dong, hospital, bed from hospital where dong ='{dong}';"
-#     query3 = f"select dong, k_food, car_trans, budongsan, clothing, drinks, hair, market, bunsik, cafe_a, washin, karaoke, convenience, chicken, car_repair, fruit, meat, c_food, billiard, bread, pcbang from dep_rec where dong ='{dong}';"
-#     cursor = MySqlConn.makeCursor()
-#     cursor.execute(query)
-#     a = cursor.fetchone()
-#     cursor.execute(query2)
-#     b = cursor.fetchone()
-#     cursor.execute(query3)
-#     c = cursor.fetchone()
-#
-#     # g_point = None
-#     if b[1] > 0:
-#         if round(a[1]) >= 70:
-#             chu_point = "혼합형 상권"
-#             if c[1] < 112:
-#                 chu_point2 = "한식 음식점"
-#             if c[2] < 90:
-#                 chu_point3 = "자동차 운송업"
-#             if c[3] < 57:
-#                 chu_point4 = "부동산중개"
-#             if c[4] < 49:
-#                 chu_point5 = "의류소매업"
-#             if c[5] < 36:
-#                 chu_point6 = "술집"
-#             if c[6] < 43:
-#                 chu_point7 = "미용실"
-#             if c[7] < 18:
-#                 chu_point8 = "슈퍼마켓"
-#             if c[8] < 24:
-#                 chu_point9 = "분식"
-#             if c[9] < 45:
-#                 chu_point10 = "카페"
-#             if c[10] < 15:
-#                 chu_point11 = "세탁소"
-#             if c[11] < 15:
-#                 chu_point12 = "노래방"
-#             if c[12] < 20:
-#                 chu_point13 = "편의점"
-#             if c[13] < 12:
-#                 chu_point14 = "치킨집"
-#             if c[14] < 13:
-#                 chu_point15 = "자동차수리"
-#             if c[15] < 14:
-#                 chu_point16 = "청과물소매"
-#             if c[16] < 15:
-#                 chu_point17 = "정육점"
-#             if c[17] < 16:
-#                 chu_point18 = "중국집"
-#             if c[18] < 17:
-#                 chu_point19 = "당구장"
-#             if c[19] < 18:
-#                 chu_point20 = "빵집"
-#             if c[20] < 19:
-#                 chu_point21 = "PC방"
-#
-#         else:
-#             chu_point = "병원가 상권"
-#             if c[1] < 112:
-#                 chu_point2 = "한식 음식점"
-#             elif c[2] < 90:
-#                 chu_point3 = "자동차 운송업"
-#             elif c[3] < 57:
-#                 chu_point4 = "부동산중개"
-#             elif c[4] < 49:
-#                 chu_point5 = "의류소매업"
-#             elif c[5] < 36:
-#                 chu_point6 = "술집"
-#             elif c[6] < 43:
-#                 chu_point7 = "미용실"
-#             elif c[7] < 18:
-#                 chu_point8 = "슈퍼마켓"
-#             elif c[8] < 24:
-#                 chu_point9 = "분식"
-#             elif c[9] < 45:
-#                 chu_point10 = "카페"
-#             elif c[10] < 15:
-#                 chu_point11 = "세탁소"
-#             elif c[11] < 15:
-#                 chu_point12 = "노래방"
-#             elif c[12] < 20:
-#                 chu_point13 = "편의점"
-#             elif c[13] < 12:
-#                 chu_point14 = "치킨집"
-#             elif c[14] < 13:
-#                 chu_point15 = "자동차수리"
-#             elif c[15] < 14:
-#                 chu_point16 = "청과물소매"
-#             elif c[16] < 15:
-#                 chu_point17 = "정육점"
-#             elif c[17] < 16:
-#                 chu_point18 = "중국집"
-#             elif c[18] < 17:
-#                 chu_point19 = "당구장"
-#             elif c[19] < 18:
-#                 chu_point20 = "빵집"
-#             elif c[20] < 19:
-#                 chu_point21 = "PC방"
-#     else:
-#         if round(a[1]) >= 70:
-#             chu_point = "아파트 상권"
-#             if c[1] < 112:
-#                 chu_point2 = "한식 음식점"
-#             elif c[2] < 90:
-#                 chu_point3 = "자동차 운송업"
-#             elif c[3] < 57:
-#                 chu_point4 = "부동산중개"
-#             elif c[4] < 49:
-#                 chu_point5 = "의류소매업"
-#             elif c[5] < 36:
-#                 chu_point6 = "술집"
-#             elif c[6] < 43:
-#                 chu_point7 = "미용실"
-#             elif c[7] < 18:
-#                 chu_point8 = "슈퍼마켓"
-#             elif c[8] < 24:
-#                 chu_point9 = "분식"
-#             elif c[9] < 45:
-#                 chu_point10 = "카페"
-#             elif c[10] < 15:
-#                 chu_point11 = "세탁소"
-#             elif c[11] < 15:
-#                 chu_point12 = "노래방"
-#             elif c[12] < 20:
-#                 chu_point13 = "편의점"
-#             elif c[13] < 12:
-#                 chu_point14 = "치킨집"
-#             elif c[14] < 13:
-#                 chu_point15 = "자동차수리"
-#             elif c[15] < 14:
-#                 chu_point16 = "청과물소매"
-#             elif c[16] < 15:
-#                 chu_point17 = "정육점"
-#             elif c[17] < 16:
-#                 chu_point18 = "중국집"
-#             elif c[18] < 17:
-#                 chu_point19 = "당구장"
-#             elif c[19] < 18:
-#                 chu_point20 = "빵집"
-#             elif c[20] < 19:
-#                 chu_point21 = "PC방"
-#         elif round(a[2]) >= 70:
-#             chu_point = "단독주택 지역 상권"
-#             if c[1] < 112:
-#                 chu_point2 = "한식 음식점"
-#             elif c[2] < 90:
-#                 chu_point3 = "자동차 운송업"
-#             elif c[3] < 57:
-#                 chu_point4 = "부동산중개"
-#             elif c[4] < 49:
-#                 chu_point5 = "의류소매업"
-#             elif c[5] < 36:
-#                 chu_point6 = "술집"
-#             elif c[6] < 43:
-#                 chu_point7 = "미용실"
-#             elif c[7] < 18:
-#                 chu_point8 = "슈퍼마켓"
-#             elif c[8] < 24:
-#                 chu_point9 = "분식"
-#             elif c[9] < 45:
-#                 chu_point10 = "카페"
-#             elif c[10] < 15:
-#                 chu_point11 = "세탁소"
-#             elif c[11] < 15:
-#                 chu_point12 = "노래방"
-#             elif c[12] < 20:
-#                 chu_point13 = "편의점"
-#             elif c[13] < 12:
-#                 chu_point14 = "치킨집"
-#             elif c[14] < 13:
-#                 chu_point15 = "자동차수리"
-#             elif c[15] < 14:
-#                 chu_point16 = "청과물소매"
-#             elif c[16] < 15:
-#                 chu_point17 = "정육점"
-#             elif c[17] < 16:
-#                 chu_point18 = "중국집"
-#             elif c[18] < 17:
-#                 chu_point19 = "당구장"
-#             elif c[19] < 18:
-#                 chu_point20 = "빵집"
-#             elif c[20] < 19:
-#                 chu_point21 = "PC방"
-#         else:
-#             chu_point = "특수 상권"
-#             if c[1] < 112:
-#                 chu_point2 = "한식 음식점"
-#             elif c[2] < 90:
-#                 chu_point3 = "자동차 운송업"
-#             elif c[3] < 57:
-#                 chu_point4 = "부동산중개"
-#             elif c[4] < 49:
-#                 chu_point5 = "의류소매업"
-#             elif c[5] < 36:
-#                 chu_point6 = "술집"
-#             elif c[6] < 43:
-#                 chu_point7 = "미용실"
-#             elif c[7] < 18:
-#                 chu_point8 = "슈퍼마켓"
-#             elif c[8] < 24:
-#                 chu_point9 = "분식"
-#             elif c[9] < 45:
-#                 chu_point10 = "카페"
-#             elif c[10] < 15:
-#                 chu_point11 = "세탁소"
-#             elif c[11] < 15:
-#                 chu_point12 = "노래방"
-#             elif c[12] < 20:
-#                 chu_point13 = "편의점"
-#             elif c[13] < 12:
-#                 chu_point14 = "치킨집"
-#             elif c[14] < 13:
-#                 chu_point15 = "자동차수리"
-#             elif c[15] < 14:
-#                 chu_point16 = "청과물소매"
-#             elif c[16] < 15:
-#                 chu_point17 = "정육점"
-#             elif c[17] < 16:
-#                 chu_point18 = "중국집"
-#             elif c[18] < 17:
-#                 chu_point19 = "당구장"
-#             elif c[19] < 18:
-#                 chu_point20 = "빵집"
-#             elif c[20] < 19:
-#                 chu_point21 = "PC방"
-#
-#     msj = {'chu_point':chu_point, 'chu_point2':chu_point2, 'chu_point3':chu_point3, 'chu_point4':chu_point4, 'chu_point5':chu_point5,
-#            'chu_point6':chu_point6, 'chu_point7':chu_point7, 'chu_point8':chu_point8, 'chu_point9':chu_point9, 'chu_point10':chu_point10,
-#            'chu_point11':chu_point11, 'chu_point12':chu_point12, 'chu_point13':chu_point13, 'chu_point14':chu_point14, 'chu_point15':chu_point15,
-#            'chu_point16':chu_point16, 'chu_point17':chu_point17, 'chu_point18':chu_point18, 'chu_point19':chu_point19, 'chu_point20':chu_point20, 'chu_point21':chu_point21}
-#     return msj
+def chuchun(dong):
+    query = f"select dong, result from dep_rec where dong = '{dong}';"
+
+    cursor = MySqlConn.makeCursor()
+    cursor.execute(query)
+    a = cursor.fetchone()
+
+    if a[1] == "아파트 상권":
+        c_point = a_chuchun(dong)
+    elif a[1] == "혼합형 상권":
+        c_point = h_chuchun(dong)
+    elif a[1] == "특수 상권":
+        c_point = t_chuchun(dong)
+    elif a[1] == "병원가 상권":
+        c_point = b_chuchun(dong)
+    else:
+        c_point = d_chuchun(dong)
+
+
+    return c_point
+
+
+def b_chuchun(dong):
+    query = f"select dong, result, grade, all_sum, P_PPL, k_food, clothing, drinks, hair, market, bunsik, cafe_a, washin, karaoke, convenience, chicken, bread, PCbang from dep_rec where dong = '{dong}';"
+    query2 = f"select dong, result, grade, all_sum, P_PPL, k_food, clothing, drinks, hair, market, bunsik, cafe_a, washin, karaoke, convenience, chicken, bread, PCbang from dep_rec where dong = '이화동';"
+    cursor = MySqlConn.makeCursor()
+    cursor.execute(query)
+    a = cursor.fetchone()
+    cursor.execute(query2)
+    b = cursor.fetchone()
+
+    c_list = []
+    if a[4]/a[5] > b[4]/b[5] :
+        c_list.append("한식음식점")
+    if a[4]/a[6] > b[4]/b[6] :
+        c_list.append("의류소매업")
+    if a[4]/a[7] > b[4]/b[7] :
+        c_list.append("술집")
+    if a[4]/a[8] > b[4]/b[8] :
+        c_list.append("미용실")
+    if a[4]/a[9] > b[4]/b[9] :
+        c_list.append("슈퍼마켓")
+    if a[4]/a[10] > b[4]/b[10] :
+        c_list.append("분식집")
+    if a[4]/a[11] > b[4]/b[11] :
+        c_list.append("카페")
+    if a[4]/a[12] > b[4]/b[12] :
+        c_list.append("세탁소")
+    if a[4]/a[13] > b[4]/b[13] :
+        c_list.append("노래방")
+    if a[4]/a[14] > b[4]/b[14] :
+        c_list.append("편의점")
+    if a[4]/a[15] > b[4]/b[15] :
+        c_list.append("치킨집")
+    if a[4]/a[16] > b[4]/b[16] :
+        c_list.append("빵집")
+    if a[4]/a[17] > b[4]/b[17] :
+        c_list.append("PC방")
+
+    if c_list == []:
+        c_list.append("없음")
+    return c_list
+
+
+def h_chuchun(dong):
+    query = f"select dong, result, grade, all_sum, P_PPL, k_food, clothing, drinks, hair, market, bunsik, cafe_a, washin, karaoke, convenience, chicken, bread, PCbang from dep_rec where dong = '{dong}';"
+    query2 = f"select dong, result, grade, all_sum, P_PPL, k_food, clothing, drinks, hair, market, bunsik, cafe_a, washin, karaoke, convenience, chicken, bread, PCbang from dep_rec where dong = '역삼1동';"
+    cursor = MySqlConn.makeCursor()
+    cursor.execute(query)
+    a = cursor.fetchone()
+    cursor.execute(query2)
+    b = cursor.fetchone()
+
+    c_list = []
+    if a[4] / a[5] > b[4] / b[5]:
+        c_list.append("한식음식점")
+    if a[4] / a[6] > b[4] / b[6]:
+        c_list.append("의류소매업")
+    if a[4] / a[7] > b[4] / b[7]:
+        c_list.append("술집")
+    if a[4] / a[8] > b[4] / b[8]:
+        c_list.append("미용실")
+    if a[4] / a[9] > b[4] / b[9]:
+        c_list.append("슈퍼마켓")
+    if a[4] / a[10] > b[4] / b[10]:
+        c_list.append("분식집")
+    if a[4] / a[11] > b[4] / b[11]:
+        c_list.append("카페")
+    if a[4] / a[12] > b[4] / b[12]:
+        c_list.append("세탁소")
+    if a[4] / a[13] > b[4] / b[13]:
+        c_list.append("노래방")
+    if a[4] / a[14] > b[4] / b[14]:
+        c_list.append("편의점")
+    if a[4] / a[15] > b[4] / b[15]:
+        c_list.append("치킨집")
+    if a[4] / a[16] > b[4] / b[16]:
+        c_list.append("빵집")
+    if a[4] / a[17] > b[4] / b[17]:
+        c_list.append("PC방")
+    if c_list == []:
+        c_list.append("없음")
+    return c_list
+
+
+def a_chuchun(dong):
+    query = f"select dong, result, grade, all_sum, P_PPL, k_food, clothing, drinks, hair, market, bunsik, cafe_a, washin, karaoke, convenience, chicken, bread, PCbang from dep_rec where dong = '{dong}';"
+    query2 = f"select dong, result, grade, all_sum, P_PPL, k_food, clothing, drinks, hair, market, bunsik, cafe_a, washin, karaoke, convenience, chicken, bread, PCbang from dep_rec where dong = '서초2동';"
+    cursor = MySqlConn.makeCursor()
+    cursor.execute(query)
+    a = cursor.fetchone()
+    cursor.execute(query2)
+    b = cursor.fetchone()
+
+    c_list = []
+    if a[4] / a[5] > b[4] / b[5]:
+        c_list.append("한식음식점")
+    if a[4] / a[6] > b[4] / b[6]:
+        c_list.append("의류소매업")
+    if a[4] / a[7] > b[4] / b[7]:
+        c_list.append("술집")
+    if a[4] / a[8] > b[4] / b[8]:
+        c_list.append("미용실")
+    if a[4] / a[9] > b[4] / b[9]:
+        c_list.append("슈퍼마켓")
+    if a[4] / a[10] > b[4] / b[10]:
+        c_list.append("분식집")
+    if a[4] / a[11] > b[4] / b[11]:
+        c_list.append("카페")
+    if a[4] / a[12] > b[4] / b[12]:
+        c_list.append("세탁소")
+    if a[4] / a[13] > b[4] / b[13]:
+        c_list.append("노래방")
+    if a[4] / a[14] > b[4] / b[14]:
+        c_list.append("편의점")
+    if a[4] / a[15] > b[4] / b[15]:
+        c_list.append("치킨집")
+    if a[4] / a[16] > b[4] / b[16]:
+        c_list.append("빵집")
+    if a[4] / a[17] > b[4] / b[17]:
+        c_list.append("PC방")
+    if c_list == []:
+        c_list.append("없음")
+    return c_list
+
+
+def t_chuchun(dong):
+    query = f"select dong, result, grade, all_sum, P_PPL, k_food, clothing, drinks, hair, market, bunsik, cafe_a, washin, karaoke, convenience, chicken, bread, PCbang from dep_rec where dong = '{dong}';"
+    query2 = f"select dong, result, grade, all_sum, P_PPL, k_food, clothing, drinks, hair, market, bunsik, cafe_a, washin, karaoke, convenience, chicken, bread, PCbang from dep_rec where dong = '신사동';"
+    cursor = MySqlConn.makeCursor()
+    cursor.execute(query)
+    a = cursor.fetchone()
+    cursor.execute(query2)
+    b = cursor.fetchone()
+
+    c_list = []
+    if a[4] / a[5] > b[4] / b[5]:
+        c_list.append("한식음식점")
+    if a[4] / a[6] > b[4] / b[6]:
+        c_list.append("의류소매업")
+    if a[4] / a[7] > b[4] / b[7]:
+        c_list.append("술집")
+    if a[4] / a[8] > b[4] / b[8]:
+        c_list.append("미용실")
+    if a[4] / a[9] > b[4] / b[9]:
+        c_list.append("슈퍼마켓")
+    if a[4] / a[10] > b[4] / b[10]:
+        c_list.append("분식집")
+    if a[4] / a[11] > b[4] / b[11]:
+        c_list.append("카페")
+    if a[4] / a[12] > b[4] / b[12]:
+        c_list.append("세탁소")
+    if a[4] / a[13] > b[4] / b[13]:
+        c_list.append("노래방")
+    if a[4] / a[14] > b[4] / b[14]:
+        c_list.append("편의점")
+    if a[4] / a[15] > b[4] / b[15]:
+        c_list.append("치킨집")
+    if a[4] / a[16] > b[4] / b[16]:
+        c_list.append("빵집")
+    if a[4] / a[17] > b[4] / b[17]:
+        c_list.append("PC방")
+    if c_list == []:
+        c_list.append("없음")
+    return c_list
+
+
+def d_chuchun(dong):
+    query = f"select dong, result, grade, all_sum, P_PPL, k_food, clothing, drinks, hair, market, bunsik, cafe_a, washin, karaoke, convenience, chicken, bread, PCbang from dep_rec where dong = '{dong}';"
+    query2 = f"select dong, result, grade, all_sum, P_PPL, k_food, clothing, drinks, hair, market, bunsik, cafe_a, washin, karaoke, convenience, chicken, bread, PCbang from dep_rec where dong = '삼청동';"
+    cursor = MySqlConn.makeCursor()
+    cursor.execute(query)
+    a = cursor.fetchone()
+    cursor.execute(query2)
+    b = cursor.fetchone()
+
+    c_list = []
+    if a[4] / a[5] > b[4] / b[5]:
+        c_list.append("한식음식점")
+    if a[4] / a[6] > b[4] / b[6]:
+        c_list.append("의류소매업")
+    if a[4] / a[7] > b[4] / b[7]:
+        c_list.append("술집")
+    if a[4] / a[8] > b[4] / b[8]:
+        c_list.append("미용실")
+    if a[4] / a[9] > b[4] / b[9]:
+        c_list.append("슈퍼마켓")
+    if a[4] / a[10] > b[4] / b[10]:
+        c_list.append("분식집")
+    if a[4] / a[11] > b[4] / b[11]:
+        c_list.append("카페")
+    if a[4] / a[12] > b[4] / b[12]:
+        c_list.append("세탁소")
+    if a[4] / a[13] > b[4] / b[13]:
+        c_list.append("노래방")
+    if a[4] / a[14] > b[4] / b[14]:
+        c_list.append("편의점")
+    if a[4] / a[15] > b[4] / b[15]:
+        c_list.append("치킨집")
+    if a[4] / a[16] > b[4] / b[16]:
+        c_list.append("빵집")
+    if a[4] / a[17] > b[4] / b[17]:
+        c_list.append("PC방")
+    if c_list == []:
+        c_list.append("없음")
+    return c_list
+
