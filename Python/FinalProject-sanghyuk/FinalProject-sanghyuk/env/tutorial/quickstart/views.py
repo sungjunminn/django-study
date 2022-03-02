@@ -576,17 +576,17 @@ def gumae_radar(dong): #집객력 radar그래프
     c = cursor.fetchone()
 
     if round(a[1]) < 97000:
-        M_score1 = round(round(a[1])) * 0.0001
+        M_score1 = round(round(a[1])//1000)*0.2
     else:
         M_score1 = 9.7
 
     if round(b[1]) < 1000:
-        M_score2 = round(round(b[1]) //100) * 0.5
+        M_score2 = round(round(b[1]) // 10)*0.1
     else:
         M_score2 = 5
 
     if round(c[1]) < 500:
-        M_score3 = round(round(c[1])//10) * 0.1
+        M_score3 = round(round(c[1])//10)*0.1
     else:
         M_score3 = 5
 
@@ -702,7 +702,7 @@ def Anjung_radar(dong): #안정성 radar그래프
     return C3D
 
 
-def sungjang_radar(dong): #집객력 radar그래프
+def sungjang_radar(dong): #성장력 radar그래프
     # chartdata 선언
     dataSource = OrderedDict()
     dataSource["dataset"] = []
@@ -716,9 +716,9 @@ def sungjang_radar(dong): #집객력 radar그래프
     categories["category"].append({"label": "변화지표"})
     categories["category"].append({"label": "공급대비 수요"})
 
-    query = f"select H_CD, Change_st from change_e where H_CD = '{dong}';"
-    query2 = f"select dong, worker_avg from changup where dong = '{dong}';"
-    query3 = f"select a.dong, round(b.L_PPL/a.dep_sum) from changup a, S_population2 b where a.dong=b.H_NM and a.dong = '{dong}';"
+    query = f"select a.dong, round(b.L_PPL/a.dep_sum), a.dep_sum from changup a, S_population2 b where a.dong=b.H_NM and a.dong = '{dong}';"
+    query2 = f"select dong, changup_per from changup where dong = '{dong}';"
+    query3 = f"select H_CD, Change_st, Change_N from change_e where H_CD = '{dong}';"
     cursor = MySqlConn.makeCursor()
     cursor.execute(query)
     a = cursor.fetchone()
@@ -727,31 +727,29 @@ def sungjang_radar(dong): #집객력 radar그래프
     cursor.execute(query3)
     c = cursor.fetchone()
 
-    if a[1] == 'LL':
-        S_score1 = 5
-    elif a[1] == 'LH':
-        S_score1 = 3.8
-    elif a[1] == 'HL':
-        S_score1 = 2.5
+    if a[1] < 20:
+        S_score1 = round(a[1] / 4)
     else:
-        S_score1 = 1.3
+        S_score1 = 10
 
     if b[1] < 20:
         S_score2 = round(b[1]) / 4
     else:
         S_score2 = 5
 
-    if c[1] < 20:
-        S_score3 = c[1] / 2
+    if c[1] == 'LL':
+        S_score3 = 5
+    elif c[1] == 'LH':
+        S_score3 = 3.8
+    elif c[1] == 'HL':
+        S_score3 = 2.5
     else:
-        S_score3 = 10
-
-    S_score4 = S_score1 + S_score2 + S_score3
+        S_score3 = 1.3
 
 
 
-    data["data"].append({"value": S_score2})
     data["data"].append({"value": S_score1})
+    data["data"].append({"value": S_score2})
     data["data"].append({"value": S_score3})
     dataSource["dataset"].append({"seriesname": "User Ratings", "data": data["data"]})
     dataSource["categories"].append({"category":categories["category"]})
@@ -1282,7 +1280,7 @@ def gumae(dong): #구매력 점수
 
 
     if round(a[1]) < 97000 :
-        M_score1 = round(round(a[1])//100)*0.1
+        M_score1 = round(round(a[1])//1000)*0.2
     else:
         M_score1 = 9.7
 
@@ -1368,15 +1366,10 @@ def sungjang(dong):
     cursor.execute(query3)
     c = cursor.fetchone()
 
-
-    if c[1] == 'LL':
-        S_score1 = 5
-    elif c[1] == 'LH':
-        S_score1 = 3.8
-    elif c[1] == 'HL':
-        S_score1 = 2.5
-    else:
-        S_score1 = 1.3
+    if a[1] < 20 :
+        S_score1 = round(a[1]/4)
+    else :
+        S_score1 = 10
 
 
     if b[1] < 20 :
@@ -1385,10 +1378,15 @@ def sungjang(dong):
         S_score2 = 5
 
 
-    if a[1] < 20 :
-        S_score3 = round(a[1]/4)
-    else :
-        S_score3 = 10
+    if c[1] == 'LL':
+        S_score3 = 5
+    elif c[1] == 'LH':
+        S_score3 = 3.8
+    elif c[1] == 'HL':
+        S_score3 = 2.5
+    else:
+        S_score3 = 1.3
+
 
     S_score4 = S_score1 + S_score2 + S_score3
     kongsu = a[2]
@@ -1430,7 +1428,7 @@ class T_S: #접근성 점수
         else:
             score3 = 5
 
-        score4 = round(score3)
+        score4 = round(score3, 2)
         return score4
 
 
@@ -1518,35 +1516,37 @@ def b_chuchun(dong):
     b = cursor.fetchone()
 
     c_list = []
-    if a[4]/a[5] > b[4]/b[5] :
+
+    if a[5] != 0 and b[5] != 0 and a[4]/a[5] > b[4]/b[5] :
         c_list.append("한식음식점")
-    if a[4]/a[6] > b[4]/b[6] :
+    if a[6] != 0 and b[6] != 0 and a[4]/a[6] > b[4]/b[6] :
         c_list.append("의류소매업")
-    if a[4]/a[7] > b[4]/b[7] :
+    if a[7] != 0 and b[7] != 0 and a[4]/a[7] > b[4]/b[7] :
         c_list.append("술집")
-    if a[4]/a[8] > b[4]/b[8] :
+    if a[8] != 0 and b[8] != 0 and a[4]/a[8] > b[4]/b[8] :
         c_list.append("미용실")
-    if a[4]/a[9] > b[4]/b[9] :
+    if a[9] != 0 and b[9] != 0 and a[4]/a[9] > b[4]/b[9] :
         c_list.append("슈퍼마켓")
-    if a[4]/a[10] > b[4]/b[10] :
+    if a[10] != 0 and b[10] != 0 and a[4]/a[10] > b[4]/b[10] :
         c_list.append("분식집")
-    if a[4]/a[11] > b[4]/b[11] :
+    if a[11] != 0 and b[11] != 0 and a[4]/a[11] > b[4]/b[11] :
         c_list.append("카페")
-    if a[4]/a[12] > b[4]/b[12] :
+    if a[12] != 0 and b[12] != 0 and a[4]/a[12] > b[4]/b[12] :
         c_list.append("세탁소")
-    if a[4]/a[13] > b[4]/b[13] :
+    if a[13] != 0 and b[13] != 0 and a[4]/a[13] > b[4]/b[13] :
         c_list.append("노래방")
-    if a[4]/a[14] > b[4]/b[14] :
+    if a[14] != 0 and b[14] != 0 and a[4]/a[14] > b[4]/b[14] :
         c_list.append("편의점")
-    if a[4]/a[15] > b[4]/b[15] :
+    if a[15] != 0 and b[15] != 0 and a[4]/a[15] > b[4]/b[15] :
         c_list.append("치킨집")
-    if a[4]/a[16] > b[4]/b[16] :
+    if a[16] != 0 and b[16] != 0 and a[4]/a[16] > b[4]/b[16] :
         c_list.append("빵집")
-    if a[4]/a[17] > b[4]/b[17] :
+    if a[17] != 0 and b[17] != 0 and a[4]/a[17] > b[4]/b[17] :
         c_list.append("PC방")
 
     if c_list == []:
         c_list.append("없음")
+
     return c_list
 
 
@@ -1560,31 +1560,31 @@ def h_chuchun(dong):
     b = cursor.fetchone()
 
     c_list = []
-    if a[4] / a[5] > b[4] / b[5]:
+    if a[5] != 0 and b[5] != 0 and a[4] / a[5] > b[4] / b[5]:
         c_list.append("한식음식점")
-    if a[4] / a[6] > b[4] / b[6]:
+    if a[6] != 0 and b[6] != 0 and a[4] / a[6] > b[4] / b[6]:
         c_list.append("의류소매업")
-    if a[4] / a[7] > b[4] / b[7]:
+    if a[7] != 0 and b[7] != 0 and a[4] / a[7] > b[4] / b[7]:
         c_list.append("술집")
-    if a[4] / a[8] > b[4] / b[8]:
+    if a[8] != 0 and b[8] != 0 and a[4] / a[8] > b[4] / b[8]:
         c_list.append("미용실")
-    if a[4] / a[9] > b[4] / b[9]:
+    if a[9] != 0 and b[9] != 0 and a[4] / a[9] > b[4] / b[9]:
         c_list.append("슈퍼마켓")
-    if a[4] / a[10] > b[4] / b[10]:
+    if a[10] != 0 and b[10] != 0 and a[4] / a[10] > b[4] / b[10]:
         c_list.append("분식집")
-    if a[4] / a[11] > b[4] / b[11]:
+    if a[11] != 0 and b[11] != 0 and a[4] / a[11] > b[4] / b[11]:
         c_list.append("카페")
-    if a[4] / a[12] > b[4] / b[12]:
+    if a[12] != 0 and b[12] != 0 and a[4] / a[12] > b[4] / b[12]:
         c_list.append("세탁소")
-    if a[4] / a[13] > b[4] / b[13]:
+    if a[13] != 0 and b[13] != 0 and a[4] / a[13] > b[4] / b[13]:
         c_list.append("노래방")
-    if a[4] / a[14] > b[4] / b[14]:
+    if a[14] != 0 and b[14] != 0 and a[4] / a[14] > b[4] / b[14]:
         c_list.append("편의점")
-    if a[4] / a[15] > b[4] / b[15]:
+    if a[15] != 0 and b[15] != 0 and a[4] / a[15] > b[4] / b[15]:
         c_list.append("치킨집")
-    if a[4] / a[16] > b[4] / b[16]:
+    if a[16] != 0 and b[16] != 0 and a[4] / a[16] > b[4] / b[16]:
         c_list.append("빵집")
-    if a[4] / a[17] > b[4] / b[17]:
+    if a[17] != 0 and b[17] != 0 and a[4] / a[17] > b[4] / b[17]:
         c_list.append("PC방")
     if c_list == []:
         c_list.append("없음")
@@ -1601,31 +1601,31 @@ def a_chuchun(dong):
     b = cursor.fetchone()
 
     c_list = []
-    if a[4] / a[5] > b[4] / b[5]:
+    if a[5] != 0 and b[5] != 0 and a[4] / a[5] > b[4] / b[5]:
         c_list.append("한식음식점")
-    if a[4] / a[6] > b[4] / b[6]:
+    if a[6] != 0 and b[6] != 0 and a[4] / a[6] > b[4] / b[6]:
         c_list.append("의류소매업")
-    if a[4] / a[7] > b[4] / b[7]:
+    if a[7] != 0 and b[7] != 0 and a[4] / a[7] > b[4] / b[7]:
         c_list.append("술집")
-    if a[4] / a[8] > b[4] / b[8]:
+    if a[8] != 0 and b[8] != 0 and a[4] / a[8] > b[4] / b[8]:
         c_list.append("미용실")
-    if a[4] / a[9] > b[4] / b[9]:
+    if a[9] != 0 and b[9] != 0 and a[4] / a[9] > b[4] / b[9]:
         c_list.append("슈퍼마켓")
-    if a[4] / a[10] > b[4] / b[10]:
+    if a[10] != 0 and b[10] != 0 and a[4] / a[10] > b[4] / b[10]:
         c_list.append("분식집")
-    if a[4] / a[11] > b[4] / b[11]:
+    if a[11] != 0 and b[11] != 0 and a[4] / a[11] > b[4] / b[11]:
         c_list.append("카페")
-    if a[4] / a[12] > b[4] / b[12]:
+    if a[12] != 0 and b[12] != 0 and a[4] / a[12] > b[4] / b[12]:
         c_list.append("세탁소")
-    if a[4] / a[13] > b[4] / b[13]:
+    if a[13] != 0 and b[13] != 0 and a[4] / a[13] > b[4] / b[13]:
         c_list.append("노래방")
-    if a[4] / a[14] > b[4] / b[14]:
+    if a[14] != 0 and b[14] != 0 and a[4] / a[14] > b[4] / b[14]:
         c_list.append("편의점")
-    if a[4] / a[15] > b[4] / b[15]:
+    if a[15] != 0 and b[15] != 0 and a[4] / a[15] > b[4] / b[15]:
         c_list.append("치킨집")
-    if a[4] / a[16] > b[4] / b[16]:
+    if a[16] != 0 and b[16] != 0 and a[4] / a[16] > b[4] / b[16]:
         c_list.append("빵집")
-    if a[4] / a[17] > b[4] / b[17]:
+    if a[17] != 0 and b[17] != 0 and a[4] / a[17] > b[4] / b[17]:
         c_list.append("PC방")
     if c_list == []:
         c_list.append("없음")
@@ -1642,31 +1642,31 @@ def t_chuchun(dong):
     b = cursor.fetchone()
 
     c_list = []
-    if a[4] / a[5] > b[4] / b[5]:
+    if a[5] != 0 and b[5] != 0 and a[4] / a[5] > b[4] / b[5]:
         c_list.append("한식음식점")
-    if a[4] / a[6] > b[4] / b[6]:
+    if a[6] != 0 and b[6] != 0 and a[4] / a[6] > b[4] / b[6]:
         c_list.append("의류소매업")
-    if a[4] / a[7] > b[4] / b[7]:
+    if a[7] != 0 and b[7] != 0 and a[4] / a[7] > b[4] / b[7]:
         c_list.append("술집")
-    if a[4] / a[8] > b[4] / b[8]:
+    if a[8] != 0 and b[8] != 0 and a[4] / a[8] > b[4] / b[8]:
         c_list.append("미용실")
-    if a[4] / a[9] > b[4] / b[9]:
+    if a[9] != 0 and b[9] != 0 and a[4] / a[9] > b[4] / b[9]:
         c_list.append("슈퍼마켓")
-    if a[4] / a[10] > b[4] / b[10]:
+    if a[10] != 0 and b[10] != 0 and a[4] / a[10] > b[4] / b[10]:
         c_list.append("분식집")
-    if a[4] / a[11] > b[4] / b[11]:
+    if a[11] != 0 and b[11] != 0 and a[4] / a[11] > b[4] / b[11]:
         c_list.append("카페")
-    if a[4] / a[12] > b[4] / b[12]:
+    if a[12] != 0 and b[12] != 0 and a[4] / a[12] > b[4] / b[12]:
         c_list.append("세탁소")
-    if a[4] / a[13] > b[4] / b[13]:
+    if a[13] != 0 and b[13] != 0 and a[4] / a[13] > b[4] / b[13]:
         c_list.append("노래방")
-    if a[4] / a[14] > b[4] / b[14]:
+    if a[14] != 0 and b[14] != 0 and a[4] / a[14] > b[4] / b[14]:
         c_list.append("편의점")
-    if a[4] / a[15] > b[4] / b[15]:
+    if a[15] != 0 and b[15] != 0 and a[4] / a[15] > b[4] / b[15]:
         c_list.append("치킨집")
-    if a[4] / a[16] > b[4] / b[16]:
+    if a[16] != 0 and b[16] != 0 and a[4] / a[16] > b[4] / b[16]:
         c_list.append("빵집")
-    if a[4] / a[17] > b[4] / b[17]:
+    if a[17] != 0 and b[17] != 0 and a[4] / a[17] > b[4] / b[17]:
         c_list.append("PC방")
     if c_list == []:
         c_list.append("없음")
@@ -1683,31 +1683,31 @@ def d_chuchun(dong):
     b = cursor.fetchone()
 
     c_list = []
-    if a[4] / a[5] > b[4] / b[5]:
+    if a[5] != 0 and b[5] != 0 and a[4] / a[5] > b[4] / b[5]:
         c_list.append("한식음식점")
-    if a[4] / a[6] > b[4] / b[6]:
+    if a[6] != 0 and b[6] != 0 and a[4] / a[6] > b[4] / b[6]:
         c_list.append("의류소매업")
-    if a[4] / a[7] > b[4] / b[7]:
+    if a[7] != 0 and b[7] != 0 and a[4] / a[7] > b[4] / b[7]:
         c_list.append("술집")
-    if a[4] / a[8] > b[4] / b[8]:
+    if a[8] != 0 and b[8] != 0 and a[4] / a[8] > b[4] / b[8]:
         c_list.append("미용실")
-    if a[4] / a[9] > b[4] / b[9]:
+    if a[9] != 0 and b[9] != 0 and a[4] / a[9] > b[4] / b[9]:
         c_list.append("슈퍼마켓")
-    if a[4] / a[10] > b[4] / b[10]:
+    if a[10] != 0 and b[10] != 0 and a[4] / a[10] > b[4] / b[10]:
         c_list.append("분식집")
-    if a[4] / a[11] > b[4] / b[11]:
+    if a[11] != 0 and b[11] != 0 and a[4] / a[11] > b[4] / b[11]:
         c_list.append("카페")
-    if a[4] / a[12] > b[4] / b[12]:
+    if a[12] != 0 and b[12] != 0 and a[4] / a[12] > b[4] / b[12]:
         c_list.append("세탁소")
-    if a[4] / a[13] > b[4] / b[13]:
+    if a[13] != 0 and b[13] != 0 and a[4] / a[13] > b[4] / b[13]:
         c_list.append("노래방")
-    if a[4] / a[14] > b[4] / b[14]:
+    if a[14] != 0 and b[14] != 0 and a[4] / a[14] > b[4] / b[14]:
         c_list.append("편의점")
-    if a[4] / a[15] > b[4] / b[15]:
+    if a[15] != 0 and b[15] != 0 and a[4] / a[15] > b[4] / b[15]:
         c_list.append("치킨집")
-    if a[4] / a[16] > b[4] / b[16]:
+    if a[16] != 0 and b[16] != 0 and a[4] / a[16] > b[4] / b[16]:
         c_list.append("빵집")
-    if a[4] / a[17] > b[4] / b[17]:
+    if a[17] != 0 and b[17] != 0 and a[4] / a[17] > b[4] / b[17]:
         c_list.append("PC방")
     if c_list == []:
         c_list.append("없음")
