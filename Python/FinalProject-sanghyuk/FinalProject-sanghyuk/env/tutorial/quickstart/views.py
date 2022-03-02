@@ -1282,12 +1282,12 @@ def gumae(dong): #구매력 점수
 
 
     if round(a[1]) < 97000 :
-        M_score1 = round(round(a[1])//1000)*0.1
+        M_score1 = round(round(a[1])//100)*0.1
     else:
         M_score1 = 9.7
 
     if round(b[1]) < 1000 :
-        M_score2 = round(round(b[1]) // 100)*0.5
+        M_score2 = round(round(b[1]) // 10)*0.1
     else:
         M_score2 = 5
 
