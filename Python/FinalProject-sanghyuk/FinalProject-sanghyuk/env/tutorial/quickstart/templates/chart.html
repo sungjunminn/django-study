@@ -81,7 +81,7 @@
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-laptop me-2"></i>업종 현황 지도</a>
                         <div class="dropdown-menu bg-transparent border-0">
-                          <form action='http://127.0.0.1:8000/post' method="POST" > {% csrf_token %}
+                          <form action='http://3.39.61.7:8000/post' method="POST" > {% csrf_token %}
                             <select name="table" class="form-control search-slt">
                                 <option>선택</option>
                                 <option value="aa">서울</option>
@@ -226,7 +226,7 @@
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="far fa-file-alt me-2"></i>분석 결과</a>
                         <div class="dropdown-menu bg-transparent border-0">
-                             <form action='http://127.0.0.1:8000/chart' method="POST" > {% csrf_token %}
+                             <form action='http://3.39.61.7:8000/chart' method="POST" > {% csrf_token %}
                                 <select name="si" id="addressRegion2" class="form-control search-slt"></select>
                                 <select name="gu" id="addressDo2" class="form-control search-slt"></select>
                                 <select name="dong" id="addressSiGunGu2" class="form-control search-slt"></select>
